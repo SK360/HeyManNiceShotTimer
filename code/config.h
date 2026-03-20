@@ -113,7 +113,8 @@ enum EditableSetting {
     EDIT_BT_AUDIO_OFFSET,
     EDIT_SHOW_TOTAL_TIME,
     EDIT_MIN_FIRST_SHOT,
-    EDIT_POST_BEEP_DELAY 
+    EDIT_POST_BEEP_DELAY,
+    EDIT_TONE_SWEEP 
 };
 
 // --- Struct for Buzzer Task Queue ---

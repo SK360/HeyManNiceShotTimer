@@ -61,7 +61,7 @@ void handleSettingsInput() {
 
     static const char* mainItems[] = {"General", "Bluetooth", "Dry Fire", "Noisy Range", "Device Status", "List Files", "Power Off Now", "Save & Exit"};
     static const char* generalItems[] = {"Max Shots", "Beep Settings", "Shot Threshold", "Min 1st Shot", "Post Beep Delay", "Screen Rotation", "Boot Animation", "Auto Sleep", "Show Total Time", "Calibrate Thresh.", "Back"};
-    static const char* beepItems[] = {"Beep Duration", "Beep Tone", "Back"};
+    static const char* beepItems[] = {"Beep Duration", "Beep Tone", "Tone Sweep", "Back"};
     static const char* noisyItems[] = {"Recoil Threshold", "Calibrate Recoil", "Back"};
 
     const int maxDryFireItems = 1 + MAX_PAR_BEEPS + 1;
@@ -256,6 +256,8 @@ void handleSettingsInput() {
                 settingBeingEdited = EDIT_BEEP_DURATION; editingULongValue = currentBeepDuration; setState(EDIT_SETTING); needsActionRedraw = false; StickCP2.Lcd.fillScreen(BLACK);
             } else if (strcmp(editingSettingName, "Beep Tone") == 0) {
                 settingBeingEdited = EDIT_BEEP_TONE; editingIntValue = currentBeepToneHz; setState(EDIT_SETTING); needsActionRedraw = false; StickCP2.Lcd.fillScreen(BLACK);
+            } else if (strcmp(editingSettingName, "Tone Sweep") == 0) {
+                settingBeingEdited = EDIT_TONE_SWEEP; editingIntValue = 2000; setState(EDIT_SETTING); needsActionRedraw = false; StickCP2.Lcd.fillScreen(BLACK);
             } else if (strcmp(editingSettingName, "Back") == 0) {
                 settingsMenuLevel = 1; currentMenuSelection = 1; 
                 menuScrollOffset = 0;
@@ -381,6 +383,10 @@ void handleEditSettingInput() {
                     playFeedbackTone(2500, 20); 
                 }
                 break;
+            case EDIT_TONE_SWEEP:
+                editingIntValue = min(max(editingIntValue + (increment * 50), 2000), 4000);
+                playFeedbackTone(editingIntValue, 100);
+                break;
             default: valueChanged = false; break;
         }
         if (settingBeingEdited == EDIT_ROTATION) {
@@ -392,7 +398,8 @@ void handleEditSettingInput() {
             settingBeingEdited != EDIT_AUTO_SLEEP && 
             settingBeingEdited != EDIT_SHOW_TOTAL_TIME &&
             settingBeingEdited != EDIT_BT_AUTO_RECONNECT &&
-            settingBeingEdited != EDIT_BT_AUDIO_OFFSET) { 
+            settingBeingEdited != EDIT_BT_AUDIO_OFFSET &&
+            settingBeingEdited != EDIT_TONE_SWEEP) { 
             playFeedbackTone(2500, 20); 
         }
     }
@@ -413,6 +420,7 @@ void handleEditSettingInput() {
             case EDIT_MAX_SHOTS: currentMaxShots = editingIntValue; break;
             case EDIT_BEEP_DURATION: currentBeepDuration = editingULongValue; break;
             case EDIT_BEEP_TONE: currentBeepToneHz = editingIntValue; break;
+            case EDIT_TONE_SWEEP: currentBeepToneHz = editingIntValue; break;
             case EDIT_SHOT_THRESHOLD: shotThresholdRms = editingIntValue; break;
             case EDIT_MIN_FIRST_SHOT: minFirstShotTimeMs = editingIntValue; break;
             case EDIT_POST_BEEP_DELAY: postBeepDelayMs = editingIntValue; break;

@@ -98,7 +98,8 @@ void displayMenu(const char* title, const char* items[], int count, int selectio
                               strcmp(items[i], "List Files") == 0 ||
                               strcmp(items[i], "Power Off Now") == 0 ||
                               strcmp(items[i], "Beep Settings") == 0 ||
-                              strcmp(items[i], "Bluetooth Settings") == 0);
+                              strcmp(items[i], "Bluetooth Settings") == 0 ||
+                              strcmp(items[i], "Tone Sweep") == 0);
 
         bool isParTimeSetting = (settingsMenuLevel == 2 && strncmp(items[i], "Par Time", 8) == 0);
         bool isBluetoothConnectItem = (settingsMenuLevel == 5 && strcmp(items[i], "Connect") == 0 );
@@ -320,11 +321,16 @@ void displayEditScreen() {
         case EDIT_BT_AUDIO_OFFSET: 
         case EDIT_MIN_FIRST_SHOT:
         case EDIT_POST_BEEP_DELAY:
+        case EDIT_TONE_SWEEP:
              StickCP2.Lcd.setTextFont(7); StickCP2.Lcd.setTextSize(1);
              StickCP2.Lcd.drawNumber(editingIntValue, StickCP2.Lcd.width() / 2, StickCP2.Lcd.height() / 2);
              if (settingBeingEdited == EDIT_BT_AUDIO_OFFSET || settingBeingEdited == EDIT_MIN_FIRST_SHOT || settingBeingEdited == EDIT_POST_BEEP_DELAY) { 
                 StickCP2.Lcd.setTextFont(0); StickCP2.Lcd.setTextSize(1); 
                 StickCP2.Lcd.drawString("ms", StickCP2.Lcd.width() / 2 + StickCP2.Lcd.textWidth(String(editingIntValue))/2 + 15, StickCP2.Lcd.height() / 2);
+             }
+             if (settingBeingEdited == EDIT_TONE_SWEEP) { 
+                StickCP2.Lcd.setTextFont(0); StickCP2.Lcd.setTextSize(1); 
+                StickCP2.Lcd.drawString("Hz", StickCP2.Lcd.width() / 2 + StickCP2.Lcd.textWidth(String(editingIntValue))/2 + 15, StickCP2.Lcd.height() / 2);
              }
              break;
         case EDIT_BEEP_DURATION:
