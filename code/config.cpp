@@ -18,3 +18,4 @@ const char* KEY_BT_VOLUME = "btVolume";
 const char* KEY_BT_AUDIO_OFFSET = "btAudioOffset"; // New NVS Key Definition
 const char* KEY_SHOW_TOTAL_TIME = "showTotTime";
 const char* KEY_MIN_FIRST_SHOT = "minFirstShot";
+const char* KEY_POST_BEEP_DELAY = "postBeepDly";

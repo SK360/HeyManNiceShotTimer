@@ -57,9 +57,9 @@ void handleLiveFireGetReady() {
     is_listening_active = false; // Don't listen until beep is finished
 
     // Set timer start time relative to beep initiation + standard delay
-    startTime = beepInitiationTime + POST_BEEP_DELAY_MS; 
+    startTime = beepInitiationTime + postBeepDelayMs; 
     
-    delay(POST_BEEP_DELAY_MS); // Wait for the standard post-beep delay
+    delay(postBeepDelayMs); // Wait for the standard post-beep delay
     
     resetShotData(); 
     lastDisplayUpdateTime = 0;
@@ -75,7 +75,7 @@ void handleLiveFireTiming() {
     // --- Check if listening should become active ---
     if (!is_listening_active) {
         // Check if enough time has passed since the calculated end of beep audio
-        // AND ensure the timer has actually started (passed POST_BEEP_DELAY_MS)
+        // AND ensure the timer has actually started (passed postBeepDelayMs)
         if (currentTime >= beep_audio_end_time && currentTime >= startTime) { 
             is_listening_active = true;
             micPeakRMS.resetPeak(); // Reset peak *just* as listening starts
@@ -320,9 +320,9 @@ void handleNoisyRangeGetReady() {
     beep_audio_end_time = max(beepInitiationTime, audioStartTime) + audioDuration + 150; // Increased buffer
     is_listening_active = false; 
 
-    startTime = beepInitiationTime + POST_BEEP_DELAY_MS; 
+    startTime = beepInitiationTime + postBeepDelayMs; 
 
-    delay(POST_BEEP_DELAY_MS); 
+    delay(postBeepDelayMs); 
     
     resetShotData();
     lastDisplayUpdateTime = 0;

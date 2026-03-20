@@ -35,6 +35,7 @@ extern bool playBootAnimation;
 extern bool enableAutoSleep;
 extern bool showTotalTime;
 extern int minFirstShotTimeMs;
+extern int postBeepDelayMs;
 
 // --- Bluetooth Variables ---
 extern BluetoothA2DPSource a2dp_source;

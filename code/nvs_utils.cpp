@@ -31,6 +31,9 @@ void loadSettings() {
     minFirstShotTimeMs = preferences.getInt(KEY_MIN_FIRST_SHOT, DEFAULT_MIN_FIRST_SHOT_TIME_MS);
     if (minFirstShotTimeMs < 0) minFirstShotTimeMs = 0;
     if (minFirstShotTimeMs > 500) minFirstShotTimeMs = 500;
+    postBeepDelayMs = preferences.getInt(KEY_POST_BEEP_DELAY, DEFAULT_POST_BEEP_DELAY_MS);
+    if (postBeepDelayMs < 50) postBeepDelayMs = 50;
+    if (postBeepDelayMs > 1000) postBeepDelayMs = 1000;
 
     currentBluetoothDeviceName = preferences.getString(KEY_BT_DEVICE_NAME, "LEXON MINO L");
     currentBluetoothAutoReconnect = preferences.getBool(KEY_BT_AUTO_RECONNECT, false);
@@ -60,6 +63,7 @@ void saveSettings() {
     preferences.putBool(KEY_AUTO_SLEEP, enableAutoSleep);
     preferences.putBool(KEY_SHOW_TOTAL_TIME, showTotalTime);
     preferences.putInt(KEY_MIN_FIRST_SHOT, minFirstShotTimeMs);
+    preferences.putInt(KEY_POST_BEEP_DELAY, postBeepDelayMs);
 
     preferences.putString(KEY_BT_DEVICE_NAME, currentBluetoothDeviceName);
     preferences.putBool(KEY_BT_AUTO_RECONNECT, currentBluetoothAutoReconnect);

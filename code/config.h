@@ -16,7 +16,7 @@ const int MENU_ITEM_HEIGHT_LANDSCAPE = 25;
 const int MENU_ITEM_HEIGHT_PORTRAIT = 18;
 const int MENU_ITEMS_PER_SCREEN_LANDSCAPE = 3;
 const int MENU_ITEMS_PER_SCREEN_PORTRAIT = 5;
-const unsigned long POST_BEEP_DELAY_MS = 750; // Increased further to 750ms
+const unsigned long DEFAULT_POST_BEEP_DELAY_MS = 200; // Default post-beep delay before timing starts
 const int MAX_FILES_LIST = 20;
 const unsigned long BOOT_JPG_FRAME_DELAY_MS = 100;
 const int MAX_BOOT_JPG_FRAMES = 150;
@@ -58,6 +58,7 @@ extern const char* KEY_BT_VOLUME;
 extern const char* KEY_BT_AUDIO_OFFSET; 
 extern const char* KEY_SHOW_TOTAL_TIME;
 extern const char* KEY_MIN_FIRST_SHOT;
+extern const char* KEY_POST_BEEP_DELAY;
 
 // --- Timer States ---
 enum TimerState {
@@ -111,7 +112,8 @@ enum EditableSetting {
     EDIT_BT_VOLUME,
     EDIT_BT_AUDIO_OFFSET,
     EDIT_SHOW_TOTAL_TIME,
-    EDIT_MIN_FIRST_SHOT 
+    EDIT_MIN_FIRST_SHOT,
+    EDIT_POST_BEEP_DELAY 
 };
 
 // --- Struct for Buzzer Task Queue ---

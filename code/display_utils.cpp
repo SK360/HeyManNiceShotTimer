@@ -118,6 +118,7 @@ void displayMenu(const char* title, const char* items[], int count, int selectio
             else if (strcmp(items[i], "Auto Sleep") == 0) itemText += (enableAutoSleep ? "On" : "Off");
             else if (strcmp(items[i], "Show Total Time") == 0) itemText += (showTotalTime ? "On" : "Off");
             else if (strcmp(items[i], "Min 1st Shot") == 0) { itemText += minFirstShotTimeMs; itemText += "ms"; }
+            else if (strcmp(items[i], "Post Beep Delay") == 0) { itemText += postBeepDelayMs; itemText += "ms"; }
             else if (settingsMenuLevel == 5 && strcmp(items[i], "Auto Reconnect") == 0) {
                 itemText += (currentBluetoothAutoReconnect ? "On" : "Off");
             }
@@ -318,9 +319,10 @@ void displayEditScreen() {
         case EDIT_BT_VOLUME:
         case EDIT_BT_AUDIO_OFFSET: 
         case EDIT_MIN_FIRST_SHOT:
+        case EDIT_POST_BEEP_DELAY:
              StickCP2.Lcd.setTextFont(7); StickCP2.Lcd.setTextSize(1);
              StickCP2.Lcd.drawNumber(editingIntValue, StickCP2.Lcd.width() / 2, StickCP2.Lcd.height() / 2);
-             if (settingBeingEdited == EDIT_BT_AUDIO_OFFSET || settingBeingEdited == EDIT_MIN_FIRST_SHOT) { 
+             if (settingBeingEdited == EDIT_BT_AUDIO_OFFSET || settingBeingEdited == EDIT_MIN_FIRST_SHOT || settingBeingEdited == EDIT_POST_BEEP_DELAY) { 
                 StickCP2.Lcd.setTextFont(0); StickCP2.Lcd.setTextSize(1); 
                 StickCP2.Lcd.drawString("ms", StickCP2.Lcd.width() / 2 + StickCP2.Lcd.textWidth(String(editingIntValue))/2 + 15, StickCP2.Lcd.height() / 2);
              }

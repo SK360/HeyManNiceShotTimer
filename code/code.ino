@@ -48,6 +48,7 @@ bool playBootAnimation = true;
 bool enableAutoSleep = true;
 bool showTotalTime = false;
 int minFirstShotTimeMs = 100;
+int postBeepDelayMs = 200;
 
 BluetoothA2DPSource a2dp_source;
 String currentBluetoothDeviceName = "LEXON MINO L";
