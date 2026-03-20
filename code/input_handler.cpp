@@ -60,7 +60,7 @@ void handleSettingsInput() {
     int itemsPerScreen = (rotation % 2 == 0) ? MENU_ITEMS_PER_SCREEN_PORTRAIT : MENU_ITEMS_PER_SCREEN_LANDSCAPE;
 
     static const char* mainItems[] = {"General", "Bluetooth", "Dry Fire", "Noisy Range", "Device Status", "List Files", "Power Off Now", "Save & Exit"};
-    static const char* generalItems[] = {"Max Shots", "Beep Settings", "Shot Threshold", "Screen Rotation", "Boot Animation", "Auto Sleep", "Calibrate Thresh.", "Back"};
+    static const char* generalItems[] = {"Max Shots", "Beep Settings", "Shot Threshold", "Min 1st Shot", "Screen Rotation", "Boot Animation", "Auto Sleep", "Show Total Time", "Calibrate Thresh.", "Back"};
     static const char* beepItems[] = {"Beep Duration", "Beep Tone", "Back"};
     static const char* noisyItems[] = {"Recoil Threshold", "Calibrate Recoil", "Back"};
 
@@ -196,12 +196,16 @@ void handleSettingsInput() {
                 settingsMenuLevel = 4; currentMenuSelection = 0; menuScrollOffset = 0; 
             } else if (strcmp(editingSettingName, "Shot Threshold") == 0) {
                 settingBeingEdited = EDIT_SHOT_THRESHOLD; editingIntValue = shotThresholdRms; setState(EDIT_SETTING); needsActionRedraw = false; StickCP2.Lcd.fillScreen(BLACK);
+            } else if (strcmp(editingSettingName, "Min 1st Shot") == 0) {
+                settingBeingEdited = EDIT_MIN_FIRST_SHOT; editingIntValue = minFirstShotTimeMs; setState(EDIT_SETTING); needsActionRedraw = false; StickCP2.Lcd.fillScreen(BLACK);
             } else if (strcmp(editingSettingName, "Screen Rotation") == 0) {
                 settingBeingEdited = EDIT_ROTATION; editingIntValue = screenRotationSetting; setState(EDIT_SETTING); needsActionRedraw = false; StickCP2.Lcd.fillScreen(BLACK);
             } else if (strcmp(editingSettingName, "Boot Animation") == 0) {
                 settingBeingEdited = EDIT_BOOT_ANIM; editingBoolValue = playBootAnimation; setState(EDIT_SETTING); needsActionRedraw = false; StickCP2.Lcd.fillScreen(BLACK);
             } else if (strcmp(editingSettingName, "Auto Sleep") == 0) {
                 settingBeingEdited = EDIT_AUTO_SLEEP; editingBoolValue = enableAutoSleep; setState(EDIT_SETTING); needsActionRedraw = false; StickCP2.Lcd.fillScreen(BLACK);
+            } else if (strcmp(editingSettingName, "Show Total Time") == 0) {
+                settingBeingEdited = EDIT_SHOW_TOTAL_TIME; editingBoolValue = showTotalTime; setState(EDIT_SETTING); needsActionRedraw = false; StickCP2.Lcd.fillScreen(BLACK);
             } else if (strcmp(editingSettingName, "Calibrate Thresh.") == 0) {
                 setState(CALIBRATE_THRESHOLD); peakRMSOverall = 0; micPeakRMS.resetPeak(); needsActionRedraw = false; StickCP2.Lcd.fillScreen(BLACK);
             } else if (strcmp(editingSettingName, "Back") == 0) {
@@ -354,12 +358,14 @@ void handleEditSettingInput() {
             case EDIT_BEEP_DURATION: editingULongValue = min(max(editingULongValue + (unsigned long)(increment * 50), 50UL), 2000UL); break;
             case EDIT_BEEP_TONE: editingIntValue = min(max(editingIntValue + (increment * 100), 500), 8000); break;
             case EDIT_SHOT_THRESHOLD: editingIntValue = min(max(editingIntValue + (increment * 500), 100), 32000); break;
+            case EDIT_MIN_FIRST_SHOT: editingIntValue = min(max(editingIntValue + (increment * 10), 0), 500); break;
             case EDIT_PAR_BEEP_COUNT: editingIntValue = min(max(editingIntValue + increment, 1), MAX_PAR_BEEPS); break;
             case EDIT_PAR_TIME_ARRAY: editingFloatValue = min(max(editingFloatValue + (increment * 0.1f), 0.1f), 10.0f); break;
             case EDIT_RECOIL_THRESHOLD: editingFloatValue = min(max(editingFloatValue + (increment * 0.1f), 0.5f), 5.0f); break;
             case EDIT_ROTATION: editingIntValue = (editingIntValue + increment + 4) % 4; break;
             case EDIT_BOOT_ANIM: editingBoolValue = !editingBoolValue; break;
             case EDIT_AUTO_SLEEP: editingBoolValue = !editingBoolValue; break;
+            case EDIT_SHOW_TOTAL_TIME: editingBoolValue = !editingBoolValue; break;
             case EDIT_BT_AUTO_RECONNECT: editingBoolValue = !editingBoolValue; break;
             case EDIT_BT_VOLUME:
                 editingIntValue = min(max(editingIntValue + (increment * 5), 0), 127);
@@ -381,6 +387,7 @@ void handleEditSettingInput() {
         if (valueChanged && 
             settingBeingEdited != EDIT_BOOT_ANIM && 
             settingBeingEdited != EDIT_AUTO_SLEEP && 
+            settingBeingEdited != EDIT_SHOW_TOTAL_TIME &&
             settingBeingEdited != EDIT_BT_AUTO_RECONNECT &&
             settingBeingEdited != EDIT_BT_AUDIO_OFFSET) { 
             playFeedbackTone(2500, 20); 
@@ -404,6 +411,7 @@ void handleEditSettingInput() {
             case EDIT_BEEP_DURATION: currentBeepDuration = editingULongValue; break;
             case EDIT_BEEP_TONE: currentBeepToneHz = editingIntValue; break;
             case EDIT_SHOT_THRESHOLD: shotThresholdRms = editingIntValue; break;
+            case EDIT_MIN_FIRST_SHOT: minFirstShotTimeMs = editingIntValue; break;
             case EDIT_PAR_BEEP_COUNT: dryFireParBeepCount = editingIntValue; break;
             case EDIT_PAR_TIME_ARRAY:
                 if (editingIntValue >= 0 && editingIntValue < MAX_PAR_BEEPS) { 
@@ -414,6 +422,7 @@ void handleEditSettingInput() {
             case EDIT_ROTATION: screenRotationSetting = editingIntValue; break;
             case EDIT_BOOT_ANIM: playBootAnimation = editingBoolValue; break;
             case EDIT_AUTO_SLEEP: enableAutoSleep = editingBoolValue; break;
+            case EDIT_SHOW_TOTAL_TIME: showTotalTime = editingBoolValue; break;
             case EDIT_BT_AUTO_RECONNECT:
                 currentBluetoothAutoReconnect = editingBoolValue;
                 break;

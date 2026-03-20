@@ -46,6 +46,8 @@ float recoilThreshold = 1.5f;
 int screenRotationSetting = 3;
 bool playBootAnimation = true;
 bool enableAutoSleep = true;
+bool showTotalTime = false;
+int minFirstShotTimeMs = 100;
 
 BluetoothA2DPSource a2dp_source;
 String currentBluetoothDeviceName = "LEXON MINO L";

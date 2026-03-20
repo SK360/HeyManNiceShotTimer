@@ -25,7 +25,7 @@ const unsigned long DRY_FIRE_RANDOM_DELAY_MIN_MS = 2000;
 const unsigned long DRY_FIRE_RANDOM_DELAY_MAX_MS = 5000;
 const int MAX_PAR_BEEPS = 10;
 const unsigned long RECOIL_DETECTION_WINDOW_MS = 100;
-const unsigned long MIN_FIRST_SHOT_TIME_MS = 100; // Min time after start for first shot
+const unsigned long DEFAULT_MIN_FIRST_SHOT_TIME_MS = 100; // Default min time after start for first shot
 const unsigned long AUTO_SLEEP_TIMEOUT_MS = 1 * 60 * 1000;
 const unsigned long SLEEP_MESSAGE_DELAY_MS = 1500;
 // #define C3_FREQUENCY 130.81f // No longer used for keep-alive
@@ -56,6 +56,8 @@ extern const char* KEY_BT_DEVICE_NAME;
 extern const char* KEY_BT_AUTO_RECONNECT;
 extern const char* KEY_BT_VOLUME;
 extern const char* KEY_BT_AUDIO_OFFSET; 
+extern const char* KEY_SHOW_TOTAL_TIME;
+extern const char* KEY_MIN_FIRST_SHOT;
 
 // --- Timer States ---
 enum TimerState {
@@ -107,7 +109,9 @@ enum EditableSetting {
     EDIT_AUTO_SLEEP,
     EDIT_BT_AUTO_RECONNECT,
     EDIT_BT_VOLUME,
-    EDIT_BT_AUDIO_OFFSET 
+    EDIT_BT_AUDIO_OFFSET,
+    EDIT_SHOW_TOTAL_TIME,
+    EDIT_MIN_FIRST_SHOT 
 };
 
 // --- Struct for Buzzer Task Queue ---

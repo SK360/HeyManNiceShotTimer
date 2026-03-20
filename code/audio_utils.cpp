@@ -5,19 +5,26 @@
 #include <freertos/task.h>     
 #include <freertos/queue.h>
 
+// --- LEDC Configuration for Buzzers ---
+#define BUZZER_LEDC_CHANNEL 2
+#define BUZZER_LEDC_RESOLUTION 8
+
 // --- Buzzer Task (Runs on Core 0) ---
 void buzzerTask(void *pvParameters) {
     BuzzerRequest receivedRequest;
-    TickType_t lastWakeTime = xTaskGetTickCount(); 
+
+    // Attach both buzzer pins to the same LEDC channel/timer
+    // so they fire in perfect hardware sync
+    ledcSetup(BUZZER_LEDC_CHANNEL, 2000, BUZZER_LEDC_RESOLUTION);
+    ledcAttachPin(BUZZER_PIN, BUZZER_LEDC_CHANNEL);
+    ledcAttachPin(BUZZER_PIN_2, BUZZER_LEDC_CHANNEL);
 
     for (;;) {
         if (xQueueReceive(buzzerQueue, &receivedRequest, portMAX_DELAY) == pdPASS) {
             if (receivedRequest.frequency > 0 && receivedRequest.duration > 0) {
-                tone(BUZZER_PIN, receivedRequest.frequency, receivedRequest.duration);
-                tone(BUZZER_PIN_2, receivedRequest.frequency, receivedRequest.duration);
-                vTaskDelay(pdMS_TO_TICKS(receivedRequest.duration + 5)); 
-                noTone(BUZZER_PIN);
-                noTone(BUZZER_PIN_2);
+                ledcWriteTone(BUZZER_LEDC_CHANNEL, receivedRequest.frequency);
+                vTaskDelay(pdMS_TO_TICKS(receivedRequest.duration));
+                ledcWriteTone(BUZZER_LEDC_CHANNEL, 0);
             } else if (receivedRequest.duration > 0) {
                  vTaskDelay(pdMS_TO_TICKS(receivedRequest.duration));
             }

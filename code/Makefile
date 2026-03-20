@@ -9,7 +9,7 @@ BC          ?= bc
 
 PARTITION_TABLE=~/.arduino15/packages/m5stack/hardware/esp32/2.1.4/tools/partitions/default_8MB.csv
 
-DEVICE :=/dev/ttyACM0
+DEVICE :=/dev/cu.usbserial-5B212384801
 
 .PHONY: build
 build:

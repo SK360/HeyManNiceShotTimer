@@ -33,6 +33,8 @@ extern float recoilThreshold;
 extern int screenRotationSetting;
 extern bool playBootAnimation;
 extern bool enableAutoSleep;
+extern bool showTotalTime;
+extern int minFirstShotTimeMs;
 
 // --- Bluetooth Variables ---
 extern BluetoothA2DPSource a2dp_source;

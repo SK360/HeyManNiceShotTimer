@@ -27,6 +27,10 @@ void loadSettings() {
     if (screenRotationSetting < 0 || screenRotationSetting > 3) screenRotationSetting = 3;
     playBootAnimation = preferences.getBool(KEY_BOOT_ANIM, true);
     enableAutoSleep = preferences.getBool(KEY_AUTO_SLEEP, true);
+    showTotalTime = preferences.getBool(KEY_SHOW_TOTAL_TIME, false);
+    minFirstShotTimeMs = preferences.getInt(KEY_MIN_FIRST_SHOT, DEFAULT_MIN_FIRST_SHOT_TIME_MS);
+    if (minFirstShotTimeMs < 0) minFirstShotTimeMs = 0;
+    if (minFirstShotTimeMs > 500) minFirstShotTimeMs = 500;
 
     currentBluetoothDeviceName = preferences.getString(KEY_BT_DEVICE_NAME, "LEXON MINO L");
     currentBluetoothAutoReconnect = preferences.getBool(KEY_BT_AUTO_RECONNECT, false);
@@ -54,6 +58,8 @@ void saveSettings() {
     preferences.putInt(KEY_ROTATION, screenRotationSetting);
     preferences.putBool(KEY_BOOT_ANIM, playBootAnimation);
     preferences.putBool(KEY_AUTO_SLEEP, enableAutoSleep);
+    preferences.putBool(KEY_SHOW_TOTAL_TIME, showTotalTime);
+    preferences.putInt(KEY_MIN_FIRST_SHOT, minFirstShotTimeMs);
 
     preferences.putString(KEY_BT_DEVICE_NAME, currentBluetoothDeviceName);
     preferences.putBool(KEY_BT_AUTO_RECONNECT, currentBluetoothAutoReconnect);

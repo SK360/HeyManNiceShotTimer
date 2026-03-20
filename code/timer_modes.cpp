@@ -113,7 +113,8 @@ void handleLiveFireTiming() {
     if (currentCyclePeakRMS > shotThresholdRms && 
         currentTime - lastDetectionTime > SHOT_REFRACTORY_MS && 
         shotCount < currentMaxShots && 
-        startTime > 0) 
+        startTime > 0 &&
+        (shotCount > 0 || (currentTime - startTime) >= minFirstShotTimeMs)) 
     {
         unsigned long shotTimeMillis = currentTime; 
         resetActivityTimer();
@@ -370,7 +371,8 @@ void handleNoisyRangeTiming() {
         currentCyclePeakRMS > shotThresholdRms &&
         currentTime - lastDetectionTime > SHOT_REFRACTORY_MS &&
         shotCount < currentMaxShots &&
-        startTime > 0) 
+        startTime > 0 &&
+        (shotCount > 0 || (currentTime - startTime) >= minFirstShotTimeMs)) 
     {
         lastSoundPeakTime = currentTime;
         checkingForRecoil = true;
