@@ -44,9 +44,9 @@ int dryFireParBeepCount = 3;
 float dryFireParTimesSec[MAX_PAR_BEEPS];
 float recoilThreshold = 1.5f;
 int screenRotationSetting = 3;
-bool playBootAnimation = true;
+bool playBootAnimation = false;
 bool enableAutoSleep = true;
-bool showTotalTime = false;
+bool showTotalTime = true;
 int minFirstShotTimeMs = 100;
 int postBeepDelayMs = 200;
 

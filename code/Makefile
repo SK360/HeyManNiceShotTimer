@@ -4,16 +4,16 @@ CORE        :=m5stack:esp32
 boardconfig :="${CORE}:m5stack_stickc_plus2"
 
 ARDUINO_CLI ?= arduino-cli
-MKSPIFFS=~/.arduino15/packages/m5stack/tools/mklittlefs/3.0.0-gnu12-dc7f933/mklittlefs
+MKSPIFFS=~/Library/Arduino15/packages/m5stack/tools/mklittlefs/3.0.0-gnu12-dc7f933/mklittlefs
 BC          ?= bc
 
-PARTITION_TABLE=~/.arduino15/packages/m5stack/hardware/esp32/2.1.4/tools/partitions/default_8MB.csv
+PARTITION_TABLE=~/Library/Arduino15/packages/m5stack/hardware/esp32/2.1.4/tools/partitions/default_8MB.csv
 
 DEVICE :=/dev/cu.usbserial-5B212384801
 
 .PHONY: build
 build:
-	$(ARDUINO_CLI) compile --fqbn $(boardconfig) $(sketch)
+	$(ARDUINO_CLI) compile -e --fqbn $(boardconfig) $(sketch)
 
 .PHONY: flash
 flash:
@@ -37,7 +37,7 @@ filesystem.bin:
 .ONESHELL:
 flash-fs: filesystem.bin
 	BUILD_SPIFFS_START_HEX=$$(cat ${PARTITION_TABLE} | grep "^spiffs"|cut -d, -f4 | xargs)
-	python ~/.arduino15/packages/m5stack/tools/esptool_py/4.5.1/esptool.py --chip esp32 \
+	~/Library/Arduino15/packages/m5stack/tools/esptool_py/4.5.1/esptool --chip esp32 \
 	  --port ${DEVICE} \
 	  --baud 1500000 \
 	  --before default_reset \
@@ -46,11 +46,15 @@ flash-fs: filesystem.bin
 	  --flash_freq 80m --flash_size 8MB \
 	  $${BUILD_SPIFFS_START_HEX} filesystem.bin
 
+.PHONY: merge
+merge:
+	~/Library/Arduino15/packages/m5stack/tools/esptool_py/4.5.1/esptool --chip esp32 merge_bin --target-offset 0 -o merged.bin 0x1000 build/m5stack.esp32.m5stack_stickc_plus2/code.ino.bootloader.bin 0x8000 build/m5stack.esp32.m5stack_stickc_plus2/code.ino.partitions.bin 0x10000 build/m5stack.esp32.m5stack_stickc_plus2/code.ino.bin 0x670000 filesystem.bin
 
 .PHONY: clean
 clean:
 	rm -rf build
 	rm -f filesystem.bin
+	rm -f merged.bin
 
 .PHONY: monitor
 monitor:
@@ -62,4 +66,5 @@ all-flash: build flash filesystem.bin flash-fs clean monitor
 .PHONY: all
 all: build flash clean monitor
 
-
+.PHONY: release
+release: clean build filesystem.bin merge
