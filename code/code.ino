@@ -4,7 +4,6 @@
 #include "BluetoothA2DPSource.h"
 #include <ESP32BluetoothScanner.h>
 #include <Preferences.h>
-#include <LittleFS.h>
 #include <cmath>        // For abs, sin
 #include <float.h>      // For FLT_MAX
 #include <vector>       // For std::vector
@@ -103,11 +102,6 @@ float editingFloatValue = 0.0f;
 bool editingBoolValue = false;
 const char* editingSettingName = "";
 
-String fileListNames[MAX_FILES_LIST];
-size_t fileListSizes[MAX_FILES_LIST];
-int fileListCount = 0;
-int fileListScrollOffset = 0;
-
 float currentCyclePeakRMS = 0.0f;
 float peakRMSOverall = 0.0f;
 
@@ -167,11 +161,6 @@ void setup() {
     if (!StickCP2.Imu.begin()) {
         displayBootScreen("WARNING", "", "IMU Init Failed!");
         // playUnsuccessBeeps(); 
-        delay(2000);
-    }
-
-    if(!LittleFS.begin()){
-        displayBootScreen("WARNING", "", "FS Failed!");
         delay(2000);
     }
 
@@ -276,7 +265,7 @@ void loop() {
 
     if (currentTime - lastBatteryCheckTime > BATTERY_CHECK_INTERVAL_MS) {
         checkBattery();
-        if (currentState == DEVICE_STATUS || currentState == LIST_FILES || 
+        if (currentState == DEVICE_STATUS ||
             currentState == MODE_SELECTION || currentState == SETTINGS_MENU_BLUETOOTH || 
             currentState == BLUETOOTH_SCANNING || lowBatteryWarning) { 
              redrawMenu = true;
@@ -307,7 +296,7 @@ void loop() {
                      currentState != SETTINGS_MENU_DEVICE &&
                      currentState != OTA_UPDATE &&
                      currentState != BLUETOOTH_SCANNING &&
-                     currentState != DEVICE_STATUS && currentState != LIST_FILES && 
+                     currentState != DEVICE_STATUS &&
                      currentState != EDIT_SETTING && currentState != CALIBRATE_THRESHOLD &&
                      currentState != CALIBRATE_RECOIL)
             {
@@ -396,7 +385,6 @@ void loop() {
         case BLUETOOTH_SCANNING:      handleBluetoothScanning(); break;
         case EDIT_SETTING:            handleEditSettingInput(); break;
         case DEVICE_STATUS:           handleDeviceStatusInput(); break;
-        case LIST_FILES:              handleListFilesInput(); break;
         case CALIBRATE_THRESHOLD:
         case CALIBRATE_RECOIL:        handleCalibrationInput(currentState); break;
         case OTA_UPDATE:              handleOtaUpdateLoop(); break;

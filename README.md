@@ -63,7 +63,7 @@ Combines microphone detection with IMU (accelerometer) recoil detection. A shot 
 - **WiFi settings page** — configure all settings and upload new firmware from a phone browser
 - **Screen rotation** — four orientations supported
 - **Auto-sleep** — light sleep after 1 minute of inactivity (disabled when Bluetooth is connected)
-- **Device status screen** — battery voltage/%, IMU readings, LittleFS usage
+- **Device status screen** — battery voltage/%, IMU readings
 - **Dual-core FreeRTOS** — buzzer runs on Core 0 to avoid blocking display/logic on Core 1
 
 ---
@@ -100,7 +100,6 @@ SETTINGS
 │   ├── Screen Rotation    (0–3)
 │   ├── Auto Sleep         (On/Off)
 │   ├── Device Status
-│   ├── List Files
 │   └── WiFi Settings      (opens WiFi AP for browser config / OTA)
 ├── Power Off Now
 └── Save & Exit
@@ -182,12 +181,9 @@ Run these from inside the `code/` directory:
 |--------|-------------|
 | `make` or `make build` | Compile only |
 | `make flash` | Compile and upload firmware |
-| `make filesystem.bin` | Generate LittleFS image from `data/` |
-| `make flash-fs` | Upload LittleFS filesystem image |
 | `make merge` | Create a single merged `.bin` (bootloader + partitions + firmware + FS) |
 | `make release` | Clean build + merged binary for distribution |
 | `make monitor` | Open serial monitor at 115200 baud |
-| `make all-flash` | Build + flash + upload FS + monitor |
 | `make clean` | Remove build artifacts |
 
 > Edit the `PORT` variable at the top of the Makefile to match your device's serial port (e.g. `/dev/cu.usbserial-XXXX` on macOS, `COM6` on Windows).

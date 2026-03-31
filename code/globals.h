@@ -94,12 +94,6 @@ extern float editingFloatValue;
 extern bool editingBoolValue;
 extern const char* editingSettingName;
 
-// File List Variables
-extern String fileListNames[MAX_FILES_LIST];
-extern size_t fileListSizes[MAX_FILES_LIST];
-extern int fileListCount;
-extern int fileListScrollOffset;
-
 // Audio Level Data
 extern float currentCyclePeakRMS;
 extern float peakRMSOverall;

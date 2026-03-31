@@ -2,7 +2,6 @@
 #include "globals.h" // Access to global variables
 #include "config.h"  // Access to constants and enums
 #include <float.h>   // Added for FLT_MAX
-#include <LittleFS.h> // Added for LittleFS
 
 void displayBootScreen(const char* line1a, const char* line1b, const char* line2) {
     StickCP2.Lcd.fillScreen(BLACK);
@@ -469,67 +468,11 @@ void displayDeviceStatusScreen() {
     StickCP2.Lcd.printf("X:%.2f, Y:%.2f, Z:%.2f", accX, accY, accZ);
     y_pos += line_h + 5;
 
-    StickCP2.Lcd.setCursor(10, y_pos);
-    size_t totalBytes = LittleFS.totalBytes();
-    size_t usedBytes = LittleFS.usedBytes();
-    if (totalBytes > 0) {
-        StickCP2.Lcd.printf("LittleFS: %u/%u B used", usedBytes, totalBytes);
-    } else {
-        StickCP2.Lcd.print("LittleFS: Not Mounted!");
-    }
     y_pos += line_h;
 
     StickCP2.Lcd.setTextDatum(BC_DATUM);
     StickCP2.Lcd.setTextSize(1);
     StickCP2.Lcd.drawString("Hold Front to Return", StickCP2.Lcd.width() / 2, StickCP2.Lcd.height() - 10);
-    drawLowBatteryIndicator();
-}
-
-void displayListFilesScreen() {
-    StickCP2.Lcd.fillScreen(BLACK);
-    StickCP2.Lcd.setTextDatum(TC_DATUM);
-    StickCP2.Lcd.setTextFont(0);
-    StickCP2.Lcd.setTextSize(2);
-    StickCP2.Lcd.drawString("LittleFS Files", StickCP2.Lcd.width() / 2, 10);
-
-    StickCP2.Lcd.setTextDatum(TL_DATUM);
-    StickCP2.Lcd.setTextSize(1);
-    int y_pos = 35;
-    int line_h = 12;
-    int rotation = StickCP2.Lcd.getRotation();
-    int itemsPerScreen = (rotation % 2 == 0) ? MENU_ITEMS_PER_SCREEN_PORTRAIT + 2 : MENU_ITEMS_PER_SCREEN_LANDSCAPE + 1;
-
-    if (fileListCount == 0) {
-        StickCP2.Lcd.setCursor(10, y_pos);
-        StickCP2.Lcd.print("No files found or");
-        y_pos += line_h;
-        StickCP2.Lcd.setCursor(10, y_pos);
-        StickCP2.Lcd.print("LittleFS error.");
-    } else {
-        int startIdx = fileListScrollOffset;
-        int endIdx = min(fileListScrollOffset + itemsPerScreen, fileListCount);
-
-        for (int i = startIdx; i < endIdx; ++i) {
-            int display_y = y_pos + (i - startIdx) * line_h;
-            StickCP2.Lcd.setCursor(5, display_y);
-            String displayName = fileListNames[i];
-            if (displayName.length() > 20) {
-                displayName = displayName.substring(0, 17) + "...";
-            }
-            StickCP2.Lcd.printf("%-20s %6d B", displayName.c_str(), (int)fileListSizes[i]);
-        }
-
-        if (fileListScrollOffset > 0) {
-             StickCP2.Lcd.fillTriangle(StickCP2.Lcd.width() / 2, 28, StickCP2.Lcd.width() / 2 - 4, 33, StickCP2.Lcd.width() / 2 + 4, 33, WHITE);
-        }
-        if (endIdx < fileListCount) {
-             StickCP2.Lcd.fillTriangle(StickCP2.Lcd.width() / 2, StickCP2.Lcd.height() - 15, StickCP2.Lcd.width() / 2 - 4, StickCP2.Lcd.height() - 20, StickCP2.Lcd.width() / 2 + 4, StickCP2.Lcd.height() - 20, WHITE);
-        }
-    }
-
-    StickCP2.Lcd.setTextDatum(BC_DATUM);
-    StickCP2.Lcd.setTextSize(1);
-    StickCP2.Lcd.drawString("Hold Front to Return", StickCP2.Lcd.width() / 2, StickCP2.Lcd.height() - 5);
     drawLowBatteryIndicator();
 }
 

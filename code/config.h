@@ -17,7 +17,6 @@ const int MENU_ITEM_HEIGHT_PORTRAIT = 18;
 const int MENU_ITEMS_PER_SCREEN_LANDSCAPE = 3;
 const int MENU_ITEMS_PER_SCREEN_PORTRAIT = 5;
 const unsigned long DEFAULT_POST_BEEP_DELAY_MS = 200; // Default post-beep delay before timing starts
-const int MAX_FILES_LIST = 20;
 const unsigned long MESSAGE_DISPLAY_MS = 2000;
 const unsigned long DRY_FIRE_RANDOM_DELAY_MIN_MS = 2000;
 const unsigned long DRY_FIRE_RANDOM_DELAY_MAX_MS = 5000;
@@ -83,7 +82,6 @@ enum TimerState {
     SETTINGS_MENU_DEVICE,
     BLUETOOTH_SCANNING,
     DEVICE_STATUS,
-    LIST_FILES,
     EDIT_SETTING,
     CALIBRATE_THRESHOLD,
     CALIBRATE_RECOIL,

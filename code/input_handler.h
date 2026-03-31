@@ -8,7 +8,6 @@ void handleModeSelectionInput();
 void handleSettingsInput();
 void handleEditSettingInput();
 void handleDeviceStatusInput();
-void handleListFilesInput();
 void handleCalibrationInput(TimerState calibrationType);
 bool checkTimerExitButtons(); // Though its logic is now mainly global
 

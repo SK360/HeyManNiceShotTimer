@@ -12,7 +12,6 @@ void displayShotReviewScreen(int index);
 void displayEditScreen();
 void displayCalibrationScreen(const char* title, float peakValue, const char* unit);
 void displayDeviceStatusScreen();
-void displayListFilesScreen();
 void displayDryFireReadyScreen();
 void displayDryFireRunningScreen(bool waiting, int beepNum, int totalBeeps);
 void drawLowBatteryIndicator();

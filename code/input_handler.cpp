@@ -7,7 +7,6 @@
 #include "audio_utils.h"     // For reset_bt_beep_state
 #include "bluetooth_utils.h"
 #include "ota_utils.h"
-#include <LittleFS.h>
 
 
 void handleModeSelectionInput() {
@@ -64,7 +63,7 @@ void handleSettingsInput() {
     static const char* liveFireItems[] = {"Max Shots", "Shot Threshold", "Min 1st Shot", "Start Delay Min", "Start Delay Max", "Calibrate Thresh.", "Back"};
     static const char* beepItems[] = {"Beep Duration", "Beep Tone", "Post Beep Delay", "Tone Sweep", "Back"};
     static const char* noisyItems[] = {"Recoil Threshold", "Calibrate Recoil", "Back"};
-    static const char* deviceItems[] = {"Screen Rotation", "Auto Sleep", "Device Status", "List Files", "WiFi Settings", "Back"};
+    static const char* deviceItems[] = {"Screen Rotation", "Auto Sleep", "Device Status", "WiFi Settings", "Back"};
 
     const int maxDryFireItems = 1 + MAX_PAR_BEEPS + 1;
     static const char* dryFireItemsBuffer[maxDryFireItems];
@@ -352,8 +351,6 @@ void handleSettingsInput() {
                 settingBeingEdited = EDIT_AUTO_SLEEP; editingBoolValue = enableAutoSleep; setState(EDIT_SETTING); needsActionRedraw = false; StickCP2.Lcd.fillScreen(BLACK);
             } else if (strcmp(editingSettingName, "Device Status") == 0) {
                 setState(DEVICE_STATUS); needsActionRedraw = false; StickCP2.Lcd.fillScreen(BLACK);
-            } else if (strcmp(editingSettingName, "List Files") == 0) {
-                setState(LIST_FILES); fileListScrollOffset = 0; needsActionRedraw = false; StickCP2.Lcd.fillScreen(BLACK);
             } else if (strcmp(editingSettingName, "WiFi Settings") == 0) {
                 setState(OTA_UPDATE); startOtaUpdate(); needsActionRedraw = false;
             } else if (strcmp(editingSettingName, "Back") == 0) {
@@ -501,57 +498,6 @@ void handleDeviceStatusInput() {
     }
 }
 
-void handleListFilesInput() {
-    resetActivityTimer();
-    int rotation = StickCP2.Lcd.getRotation();
-    int itemsPerScreen = (rotation % 2 == 0) ? MENU_ITEMS_PER_SCREEN_PORTRAIT + 2 : MENU_ITEMS_PER_SCREEN_LANDSCAPE + 1;
-
-    if (redrawMenu) {
-        fileListCount = 0;
-        File root = LittleFS.open("/");
-        if (root && root.isDirectory()) {
-            File file = root.openNextFile();
-            while(file && fileListCount < MAX_FILES_LIST){
-                if(!file.isDirectory()){
-                    fileListNames[fileListCount] = String(file.name());
-                    fileListSizes[fileListCount] = file.size();
-                    fileListCount++;
-                }
-                file = root.openNextFile();
-            }
-            root.close();
-        }
-    }
-
-    bool upPressed = (rotation == 3) ? M5.BtnPWR.wasClicked() : StickCP2.BtnB.wasClicked();
-    bool downPressed = (rotation == 3) ? StickCP2.BtnB.wasClicked() : M5.BtnPWR.wasClicked();
-
-    if (upPressed) {
-        if (fileListScrollOffset > 0) {
-            fileListScrollOffset--;
-            redrawMenu = true;
-        }
-    }
-    if (downPressed) {
-        if (fileListScrollOffset + itemsPerScreen < fileListCount) {
-            fileListScrollOffset++;
-            redrawMenu = true;
-        }
-    }
-
-    if (redrawMenu) {
-        displayListFilesScreen();
-        redrawMenu = false;
-    }
-
-     if (StickCP2.BtnA.pressedFor(LONG_PRESS_DURATION_MS)) {
-         setState(SETTINGS_MENU_DEVICE);
-         settingsMenuLevel = 6;
-         currentMenuSelection = 4;
-         menuScrollOffset = 0;
-         StickCP2.Lcd.fillScreen(BLACK);
-     }
-}
 
 void handleCalibrationInput(TimerState calibrationType) {
     resetActivityTimer();

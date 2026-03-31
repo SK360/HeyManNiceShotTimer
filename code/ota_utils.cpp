@@ -449,7 +449,7 @@ void handleOtaUpdateLoop() {
         resetActivityTimer();
         settingsMenuLevel = 6;
         setState(SETTINGS_MENU_DEVICE);
-        currentMenuSelection = 4; // "WiFi Settings" index in deviceItems
+        currentMenuSelection = 3; // "WiFi Settings" index in deviceItems
         menuScrollOffset = 0;
         StickCP2.Lcd.fillScreen(BLACK);
         playUnsuccessBeeps();
