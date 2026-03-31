@@ -97,7 +97,7 @@ SETTINGS
 │   ├── Auto Reconnect
 │   └── Scan for Devices
 ├── Device
-│   ├── Screen Rotation    (0–3)
+│   ├── Orientation        (Right/Left hand)
 │   ├── Auto Sleep         (On/Off)
 │   ├── Device Status
 │   └── WiFi Settings      (opens WiFi AP for browser config / OTA)

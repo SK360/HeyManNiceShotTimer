@@ -13,7 +13,7 @@ void handleModeSelectionInput() {
     const char* modeItems[] = {"Live Fire", "Dry Fire Par", "Noisy Range"};
     int modeCount = sizeof(modeItems) / sizeof(modeItems[0]);
     int rotation = StickCP2.Lcd.getRotation();
-    int itemsPerScreen = (rotation % 2 == 0) ? MENU_ITEMS_PER_SCREEN_PORTRAIT : MENU_ITEMS_PER_SCREEN_LANDSCAPE;
+    int itemsPerScreen = MENU_ITEMS_PER_SCREEN_LANDSCAPE;
 
     if (currentMenuSelection < menuScrollOffset) {
         menuScrollOffset = currentMenuSelection; redrawMenu = true;
@@ -57,13 +57,13 @@ void handleSettingsInput() {
     const char** items = nullptr;
     int itemCount = 0;
     int rotation = StickCP2.Lcd.getRotation();
-    int itemsPerScreen = (rotation % 2 == 0) ? MENU_ITEMS_PER_SCREEN_PORTRAIT : MENU_ITEMS_PER_SCREEN_LANDSCAPE;
+    int itemsPerScreen = MENU_ITEMS_PER_SCREEN_LANDSCAPE;
 
     static const char* mainItems[] = {"Live Fire", "Dry Fire", "Noisy Range", "Beep Settings", "Bluetooth", "Device", "Power Off Now", "Save & Exit"};
     static const char* liveFireItems[] = {"Max Shots", "Shot Threshold", "Min 1st Shot", "Start Delay Min", "Start Delay Max", "Calibrate Thresh.", "Back"};
     static const char* beepItems[] = {"Beep Duration", "Beep Tone", "Post Beep Delay", "Tone Sweep", "Back"};
     static const char* noisyItems[] = {"Recoil Threshold", "Calibrate Recoil", "Back"};
-    static const char* deviceItems[] = {"Screen Rotation", "Auto Sleep", "Device Status", "WiFi Settings", "Back"};
+    static const char* deviceItems[] = {"Orientation", "Auto Sleep", "Device Status", "WiFi Settings", "Back"};
 
     const int maxDryFireItems = 1 + MAX_PAR_BEEPS + 1;
     static const char* dryFireItemsBuffer[maxDryFireItems];
@@ -345,7 +345,7 @@ void handleSettingsInput() {
         else if (settingsMenuLevel == 6) {
             editingSettingName = items[currentMenuSelection];
             stateBeforeEdit = SETTINGS_MENU_DEVICE;
-            if (strcmp(editingSettingName, "Screen Rotation") == 0) {
+            if (strcmp(editingSettingName, "Orientation") == 0) {
                 settingBeingEdited = EDIT_ROTATION; editingIntValue = screenRotationSetting; setState(EDIT_SETTING); needsActionRedraw = false; StickCP2.Lcd.fillScreen(BLACK);
             } else if (strcmp(editingSettingName, "Auto Sleep") == 0) {
                 settingBeingEdited = EDIT_AUTO_SLEEP; editingBoolValue = enableAutoSleep; setState(EDIT_SETTING); needsActionRedraw = false; StickCP2.Lcd.fillScreen(BLACK);
@@ -388,7 +388,7 @@ void handleEditSettingInput() {
             case EDIT_PAR_BEEP_COUNT: editingIntValue = min(max(editingIntValue + increment, 1), MAX_PAR_BEEPS); break;
             case EDIT_PAR_TIME_ARRAY: editingFloatValue = min(max(editingFloatValue + (increment * 0.1f), 0.1f), 10.0f); break;
             case EDIT_RECOIL_THRESHOLD: editingFloatValue = min(max(editingFloatValue + (increment * 0.1f), 0.5f), 5.0f); break;
-            case EDIT_ROTATION: editingIntValue = (editingIntValue + increment + 4) % 4; break;
+            case EDIT_ROTATION: editingIntValue = (editingIntValue == 1) ? 3 : 1; break;
             case EDIT_AUTO_SLEEP: editingBoolValue = !editingBoolValue; break;
             case EDIT_BT_AUTO_RECONNECT: editingBoolValue = !editingBoolValue; break;
             case EDIT_BT_VOLUME:
@@ -507,7 +507,7 @@ void handleCalibrationInput(TimerState calibrationType) {
     const char* unit = "";
     bool valueChanged = false;
     int rotation = StickCP2.Lcd.getRotation();
-    int itemsPerScreen = (rotation % 2 == 0) ? MENU_ITEMS_PER_SCREEN_PORTRAIT : MENU_ITEMS_PER_SCREEN_LANDSCAPE;
+    int itemsPerScreen = MENU_ITEMS_PER_SCREEN_LANDSCAPE;
 
     if (calibrationType == CALIBRATE_THRESHOLD) {
         title = "Calibrate Threshold";

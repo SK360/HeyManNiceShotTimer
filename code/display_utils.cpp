@@ -15,25 +15,11 @@ void displayBootScreen(const char* line1a, const char* line1b, const char* line2
 }
 
 String getUpButtonLabel() {
-    int rotation = StickCP2.Lcd.getRotation();
-    switch (rotation) {
-        case 0: return "Right";
-        case 1: return "Top";
-        case 2: return "Left";
-        case 3: return "Bottom";
-        default: return "Top";
-    }
+    return (StickCP2.Lcd.getRotation() == 3) ? "Bottom" : "Top";
 }
 
 String getDownButtonLabel() {
-    int rotation = StickCP2.Lcd.getRotation();
-    switch (rotation) {
-        case 0: return "Left";
-        case 1: return "Bottom";
-        case 2: return "Right";
-        case 3: return "Top";
-        default: return "Bottom";
-    }
+    return (StickCP2.Lcd.getRotation() == 3) ? "Top" : "Bottom";
 }
 
 void displayMenu(const char* title, const char* items[], int count, int selection, int scrollOffset) {
@@ -77,9 +63,9 @@ void displayMenu(const char* title, const char* items[], int count, int selectio
 
     StickCP2.Lcd.setTextDatum(TL_DATUM);
     int rotation = StickCP2.Lcd.getRotation();
-    int itemsPerScreen = (rotation % 2 == 0) ? MENU_ITEMS_PER_SCREEN_PORTRAIT : MENU_ITEMS_PER_SCREEN_LANDSCAPE;
-    int itemHeight = (rotation % 2 == 0) ? MENU_ITEM_HEIGHT_PORTRAIT : MENU_ITEM_HEIGHT_LANDSCAPE;
-    int textSize = (rotation % 2 == 0) ? 1 : 2;
+    int itemsPerScreen = MENU_ITEMS_PER_SCREEN_LANDSCAPE;
+    int itemHeight = MENU_ITEM_HEIGHT_LANDSCAPE;
+    int textSize = 2;
 
     StickCP2.Lcd.setTextSize(textSize);
 
@@ -115,7 +101,7 @@ void displayMenu(const char* title, const char* items[], int count, int selectio
             else if (strcmp(items[i], "Shot Threshold") == 0) itemText += shotThresholdRms;
             else if (strcmp(items[i], "Par Beep Count") == 0) itemText += dryFireParBeepCount;
             else if (strcmp(items[i], "Recoil Threshold") == 0) itemText += String(recoilThreshold, 1);
-            else if (strcmp(items[i], "Screen Rotation") == 0) itemText += screenRotationSetting;
+            else if (strcmp(items[i], "Orientation") == 0) itemText += (screenRotationSetting == 1 ? "Right" : "Left");
             else if (strcmp(items[i], "Auto Sleep") == 0) itemText += (enableAutoSleep ? "On" : "Off");
 
             else if (strcmp(items[i], "Min 1st Shot") == 0) { itemText += minFirstShotTimeMs; itemText += "ms"; }
@@ -181,16 +167,16 @@ void displayTimingScreen(float elapsedTime, int count, float lastSplit) {
     if (redrawMenu || abs(elapsedTime - prevElapsedTime) > 0.01f) {
         StickCP2.Lcd.setTextFont(7);
         StickCP2.Lcd.setTextSize(1);
-        int time_y = (rotation % 2 == 0) ? 20 : 15;
+        int time_y = 15;
         StickCP2.Lcd.fillRect(5, time_y, StickCP2.Lcd.width() - 10 , StickCP2.Lcd.fontHeight(7) + 4, BLACK);
         StickCP2.Lcd.setCursor(10, time_y);
         StickCP2.Lcd.printf("%.2f", elapsedTime);
         prevElapsedTime = elapsedTime;
     }
 
-    int shots_y = (rotation % 2 == 0) ? 80 : 75;
-    int split_y = shots_y + ((rotation % 2 == 0) ? 20 : 25);
-    int text_size = (rotation % 2 == 0) ? 1 : 2;
+    int shots_y = 75;
+    int split_y = shots_y + 25;
+    int text_size = 2;
     int line_h = (text_size == 1) ? 14 : 20;
 
     if (redrawMenu || count != prevCount) {
@@ -229,9 +215,8 @@ void displayStoppedScreen() {
     StickCP2.Lcd.setTextFont(0);
     StickCP2.Lcd.setTextColor(WHITE, BLACK);
     StickCP2.Lcd.setTextDatum(TL_DATUM);
-    int rotation = StickCP2.Lcd.getRotation();
-    int text_size = (rotation % 2 == 0) ? 1 : 2;
-    int line_h = (text_size == 1) ? 16 : 22;
+    int text_size = 2;
+    int line_h = 22;
     int y_pos = 15;
 
     StickCP2.Lcd.setTextSize(text_size);
@@ -293,9 +278,8 @@ void displayShotReviewScreen(int index) {
     StickCP2.Lcd.fillScreen(BLACK);
     StickCP2.Lcd.setTextFont(0);
     StickCP2.Lcd.setTextColor(WHITE, BLACK);
-    int rotation = StickCP2.Lcd.getRotation();
-    int text_size = (rotation % 2 == 0) ? 1 : 2;
-    int line_h = (text_size == 1) ? 16 : 22;
+    int text_size = 2;
+    int line_h = 22;
 
     // Title
     StickCP2.Lcd.setTextDatum(TC_DATUM);
@@ -346,7 +330,7 @@ void displayEditScreen() {
         StickCP2.Lcd.setTextDatum(BC_DATUM);
         StickCP2.Lcd.setTextFont(0);
         StickCP2.Lcd.setTextSize(1);
-        if (settingBeingEdited == EDIT_AUTO_SLEEP || settingBeingEdited == EDIT_BT_AUTO_RECONNECT) {
+        if (settingBeingEdited == EDIT_ROTATION || settingBeingEdited == EDIT_AUTO_SLEEP || settingBeingEdited == EDIT_BT_AUTO_RECONNECT) {
             StickCP2.Lcd.drawString(getUpButtonLabel() + " or " + getDownButtonLabel() + " = Toggle", StickCP2.Lcd.width() / 2, StickCP2.Lcd.height() - 25);
         } else {
             StickCP2.Lcd.drawString(getUpButtonLabel() + "=Up / " + getDownButtonLabel() + "=Down", StickCP2.Lcd.width() / 2, StickCP2.Lcd.height() - 25);
@@ -366,10 +350,13 @@ void displayEditScreen() {
                  StickCP2.Lcd.drawNumber(editingIntValue, StickCP2.Lcd.width() / 2, StickCP2.Lcd.height() / 2);
              }
              break;
+        case EDIT_ROTATION:
+             StickCP2.Lcd.setTextFont(4); StickCP2.Lcd.setTextSize(1);
+             StickCP2.Lcd.drawString(editingIntValue == 1 ? "Right Hand" : "Left Hand", StickCP2.Lcd.width() / 2, StickCP2.Lcd.height() / 2);
+             break;
         case EDIT_BEEP_TONE:
         case EDIT_SHOT_THRESHOLD:
         case EDIT_PAR_BEEP_COUNT:
-        case EDIT_ROTATION:
         case EDIT_BT_VOLUME:
         case EDIT_BT_AUDIO_OFFSET: 
         case EDIT_MIN_FIRST_SHOT:

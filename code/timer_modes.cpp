@@ -202,8 +202,7 @@ void handleDryFireReadyInput() {
     if (StickCP2.BtnA.pressedFor(LONG_PRESS_DURATION_MS)) {
         setState(MODE_SELECTION);
         currentMenuSelection = (int)MODE_DRY_FIRE;
-        int rotation = StickCP2.Lcd.getRotation();
-        int itemsPerScreen = (rotation % 2 == 0) ? MENU_ITEMS_PER_SCREEN_PORTRAIT : MENU_ITEMS_PER_SCREEN_LANDSCAPE;
+        int itemsPerScreen = MENU_ITEMS_PER_SCREEN_LANDSCAPE;
         menuScrollOffset = max(0, currentMenuSelection - itemsPerScreen + 1);
         StickCP2.Lcd.fillScreen(BLACK);
         return;
@@ -305,8 +304,7 @@ void handleNoisyRangeReadyInput() {
     if (StickCP2.BtnA.pressedFor(LONG_PRESS_DURATION_MS)) {
         setState(MODE_SELECTION);
         currentMenuSelection = (int)MODE_NOISY_RANGE;
-        int rotation = StickCP2.Lcd.getRotation();
-        int itemsPerScreen = (rotation % 2 == 0) ? MENU_ITEMS_PER_SCREEN_PORTRAIT : MENU_ITEMS_PER_SCREEN_LANDSCAPE;
+        int itemsPerScreen = MENU_ITEMS_PER_SCREEN_LANDSCAPE;
         menuScrollOffset = max(0, currentMenuSelection - itemsPerScreen + 1);
         StickCP2.Lcd.fillScreen(BLACK);
         return;

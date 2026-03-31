@@ -117,7 +117,7 @@ input[type="number"]:focus,select:focus{outline:none;border-color:#4CAF50}
 <details>
 <summary>Device</summary>
 <div class="fields">
-<div class="field"><label>Screen Rotation</label><select id="screenRotation"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></div>
+<div class="field"><label>Orientation</label><select id="screenRotation"><option value="1">Right Hand</option><option value="3">Left Hand</option></select></div>
 <div class="field toggle"><label>Auto Sleep</label><label class="switch"><input type="checkbox" id="autoSleep"><span class="slider"></span></label></div>
 </div>
 </details>
@@ -361,7 +361,8 @@ static void handlePostSettings() {
     if (doc["device"].is<JsonObject>()) {
         JsonObject dv = doc["device"];
         if (dv["screenRotation"].is<int>()) {
-            screenRotationSetting = constrain((int)dv["screenRotation"], 0, 3);
+            int r = (int)dv["screenRotation"];
+            screenRotationSetting = (r == 1 || r == 3) ? r : 3;
             StickCP2.Lcd.setRotation(screenRotationSetting);
         }
         if (dv["autoSleep"].is<bool>()) {

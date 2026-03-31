@@ -127,7 +127,7 @@ bool a2dp_ssid_callback(const char *ssid, esp_bd_addr_t address, int rrsi) {
 void handleBluetoothScanning() {
     resetActivityTimer(); 
     int rotation = StickCP2.Lcd.getRotation();
-    int itemsPerScreen = MENU_ITEMS_PER_SCREEN_PORTRAIT + 2; 
+    int itemsPerScreen = MENU_ITEMS_PER_SCREEN_LANDSCAPE;
 
     if (scanInProgress) {
         // --- Scan is Active ---
@@ -165,7 +165,7 @@ void handleBluetoothScanning() {
              discoveredBtDevices.clear(); 
              setState(stateBeforeScan);   
              currentMenuSelection = 5;    
-             int btMenuItemsPerScreen = (StickCP2.Lcd.getRotation() % 2 == 0) ? MENU_ITEMS_PER_SCREEN_PORTRAIT : MENU_ITEMS_PER_SCREEN_LANDSCAPE;
+             int btMenuItemsPerScreen = MENU_ITEMS_PER_SCREEN_LANDSCAPE;
              menuScrollOffset = max(0, currentMenuSelection - btMenuItemsPerScreen + 1);
              StickCP2.Lcd.fillScreen(BLACK);
              return;
@@ -253,7 +253,7 @@ void handleBluetoothScanning() {
                 discoveredBtDevices.clear(); // Clear scan results list
                 setState(stateBeforeScan);   // Return to Bluetooth Settings menu
                 currentMenuSelection = 0;    // Highlight "Connect" item
-                int btMenuItemsPerScreen = (StickCP2.Lcd.getRotation() % 2 == 0) ? MENU_ITEMS_PER_SCREEN_PORTRAIT : MENU_ITEMS_PER_SCREEN_LANDSCAPE;
+                int btMenuItemsPerScreen = MENU_ITEMS_PER_SCREEN_LANDSCAPE;
                 menuScrollOffset = max(0, currentMenuSelection - btMenuItemsPerScreen + 1);
                 StickCP2.Lcd.fillScreen(BLACK); // Prepare for BT settings menu display
 
