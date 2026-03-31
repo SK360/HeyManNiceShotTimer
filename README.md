@@ -143,7 +143,38 @@ Install these **exact versions** — other versions may not be compatible:
 
 > **ESP32-BT-Scanner** is not in the Library Manager. Download the ZIP from the link above and install via **Sketch → Include Library → Add .ZIP Library**.
 
-### Build Tool
+### Arduino IDE
+
+1. **Install Arduino IDE 2.x** from [arduino.cc](https://www.arduino.cc/en/software)
+
+2. **Add board manager URLs** — go to *File → Preferences* and add both URLs to "Additional boards manager URLs":
+   ```
+   https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json
+   https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
+   ```
+
+3. **Install board packages** via *Tools → Board → Boards Manager*:
+   - Search `m5stack` → install **M5Stack** version `2.1.4`
+   - Search `esp32` → install **esp32 by Espressif Systems** version `3.3.2`
+
+4. **Install libraries** via *Tools → Manage Libraries*:
+   - `M5GFX` version `0.2.7`
+   - `M5Unified` version `0.2.5`
+   - `ESP32-A2DP` version `1.8.7`
+
+5. **Install ESP32-BT-Scanner manually** — download the ZIP from [GitHub](https://github.com/jcarletto27/ESP32-BT-Scanner) and install via *Sketch → Include Library → Add .ZIP Library*
+
+6. **Select the board** — *Tools → Board → M5Stack → M5StickC-Plus2*
+
+7. **Select your port** — *Tools → Port* → choose the COM port for your device
+
+8. **Open the sketch** — open `code/code.ino`
+
+9. **Upload** — click the Upload button (or *Sketch → Upload*)
+
+> **Note:** To upload the boot animation filesystem, install the [arduino-littlefs-upload plugin](https://github.com/earlephilhower/arduino-littlefs-upload) and use *Tools → Upload LittleFS to Pico/ESP8266/ESP32*.
+
+### arduino-cli / Makefile
 
 This project uses [arduino-cli](https://arduino.github.io/arduino-cli/). Install it, then install the board packages above.
 
