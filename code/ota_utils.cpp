@@ -41,7 +41,7 @@ label{display:block;font-size:13px;color:#aaa;margin-bottom:4px}
 input[type="number"],select{width:100%;padding:10px 12px;background:#2a2a2a;border:1px solid #444;border-radius:6px;color:#fff;font-size:15px;-webkit-appearance:none}
 input[type="number"]:focus,select:focus{outline:none;border-color:#4CAF50}
 .toggle{display:flex;align-items:center;justify-content:space-between}
-.toggle label{margin:0;flex:1}
+.toggle>label:first-child{margin:0;flex:1}
 .switch{position:relative;width:48px;height:26px;flex-shrink:0}
 .switch input{opacity:0;width:0;height:0}
 .slider{position:absolute;cursor:pointer;inset:0;background:#444;border-radius:26px;transition:.3s}
