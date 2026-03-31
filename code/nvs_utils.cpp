@@ -7,7 +7,7 @@ void loadSettings() {
 
     currentMaxShots = preferences.getInt(KEY_MAX_SHOTS, 10);
     if (currentMaxShots > MAX_SHOTS_LIMIT) currentMaxShots = MAX_SHOTS_LIMIT;
-    else if (currentMaxShots <= 0) currentMaxShots = 1;
+    else if (currentMaxShots < 0) currentMaxShots = 0;
 
     currentBeepDuration = preferences.getULong(KEY_BEEP_DUR, 150);
     currentBeepToneHz = preferences.getInt(KEY_BEEP_HZ, 2000);
@@ -27,13 +27,21 @@ void loadSettings() {
     if (screenRotationSetting < 0 || screenRotationSetting > 3) screenRotationSetting = 3;
     playBootAnimation = preferences.getBool(KEY_BOOT_ANIM, false);
     enableAutoSleep = preferences.getBool(KEY_AUTO_SLEEP, true);
-    showTotalTime = preferences.getBool(KEY_SHOW_TOTAL_TIME, true);
+
     minFirstShotTimeMs = preferences.getInt(KEY_MIN_FIRST_SHOT, DEFAULT_MIN_FIRST_SHOT_TIME_MS);
     if (minFirstShotTimeMs < 0) minFirstShotTimeMs = 0;
     if (minFirstShotTimeMs > 500) minFirstShotTimeMs = 500;
     postBeepDelayMs = preferences.getInt(KEY_POST_BEEP_DELAY, DEFAULT_POST_BEEP_DELAY_MS);
     if (postBeepDelayMs < 50) postBeepDelayMs = 50;
     if (postBeepDelayMs > 1000) postBeepDelayMs = 1000;
+
+    startDelayMinMs = preferences.getInt(KEY_START_DELAY_MIN, DEFAULT_START_DELAY_MIN_MS);
+    if (startDelayMinMs < 0) startDelayMinMs = 0;
+    if (startDelayMinMs > MAX_START_DELAY_MS) startDelayMinMs = MAX_START_DELAY_MS;
+    startDelayMaxMs = preferences.getInt(KEY_START_DELAY_MAX, DEFAULT_START_DELAY_MAX_MS);
+    if (startDelayMaxMs < 0) startDelayMaxMs = 0;
+    if (startDelayMaxMs > MAX_START_DELAY_MS) startDelayMaxMs = MAX_START_DELAY_MS;
+    if (startDelayMaxMs < startDelayMinMs) startDelayMaxMs = startDelayMinMs;
 
     currentBluetoothDeviceName = preferences.getString(KEY_BT_DEVICE_NAME, "LEXON MINO L");
     currentBluetoothAutoReconnect = preferences.getBool(KEY_BT_AUTO_RECONNECT, false);
@@ -61,9 +69,11 @@ void saveSettings() {
     preferences.putInt(KEY_ROTATION, screenRotationSetting);
     preferences.putBool(KEY_BOOT_ANIM, playBootAnimation);
     preferences.putBool(KEY_AUTO_SLEEP, enableAutoSleep);
-    preferences.putBool(KEY_SHOW_TOTAL_TIME, showTotalTime);
+
     preferences.putInt(KEY_MIN_FIRST_SHOT, minFirstShotTimeMs);
     preferences.putInt(KEY_POST_BEEP_DELAY, postBeepDelayMs);
+    preferences.putInt(KEY_START_DELAY_MIN, startDelayMinMs);
+    preferences.putInt(KEY_START_DELAY_MAX, startDelayMaxMs);
 
     preferences.putString(KEY_BT_DEVICE_NAME, currentBluetoothDeviceName);
     preferences.putBool(KEY_BT_AUTO_RECONNECT, currentBluetoothAutoReconnect);

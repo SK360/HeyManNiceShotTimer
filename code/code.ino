@@ -46,9 +46,11 @@ float recoilThreshold = 1.5f;
 int screenRotationSetting = 3;
 bool playBootAnimation = false;
 bool enableAutoSleep = true;
-bool showTotalTime = true;
+
 int minFirstShotTimeMs = 100;
 int postBeepDelayMs = 200;
+int startDelayMinMs = 2000;
+int startDelayMaxMs = 5000;
 
 BluetoothA2DPSource a2dp_source;
 String currentBluetoothDeviceName = "LEXON MINO L";
@@ -69,6 +71,8 @@ volatile unsigned long current_bt_beep_actual_end_time = 0;
 // --- Timer State Variables ---
 volatile bool is_listening_active = false;      // Definition
 volatile unsigned long beep_audio_end_time = 0; // Definition
+unsigned long liveFireDelayEndTime = 0;
+bool liveFireWaitingForDelay = false;
 
 
 ESP32BluetoothScanner btScanner;
@@ -316,6 +320,7 @@ void loop() {
             else if (currentState != SETTINGS_MENU_MAIN && currentState != SETTINGS_MENU_GENERAL &&
                      currentState != SETTINGS_MENU_BEEP && currentState != SETTINGS_MENU_BLUETOOTH &&
                      currentState != SETTINGS_MENU_DRYFIRE && currentState != SETTINGS_MENU_NOISY &&
+                     currentState != SETTINGS_MENU_DEVICE &&
                      currentState != BLUETOOTH_SCANNING && 
                      currentState != DEVICE_STATUS && currentState != LIST_FILES && 
                      currentState != EDIT_SETTING && currentState != CALIBRATE_THRESHOLD && 
@@ -443,7 +448,8 @@ void loop() {
         case SETTINGS_MENU_BEEP:
         case SETTINGS_MENU_DRYFIRE:
         case SETTINGS_MENU_NOISY:
-        case SETTINGS_MENU_BLUETOOTH: handleSettingsInput(); break;
+        case SETTINGS_MENU_BLUETOOTH:
+        case SETTINGS_MENU_DEVICE:    handleSettingsInput(); break;
         case BLUETOOTH_SCANNING:      handleBluetoothScanning(); break;
         case EDIT_SETTING:            handleEditSettingInput(); break;
         case DEVICE_STATUS:           handleDeviceStatusInput(); break;

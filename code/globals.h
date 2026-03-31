@@ -33,9 +33,11 @@ extern float recoilThreshold;
 extern int screenRotationSetting;
 extern bool playBootAnimation;
 extern bool enableAutoSleep;
-extern bool showTotalTime;
+
 extern int minFirstShotTimeMs;
 extern int postBeepDelayMs;
+extern int startDelayMinMs;
+extern int startDelayMaxMs;
 
 // --- Bluetooth Variables ---
 extern BluetoothA2DPSource a2dp_source;
@@ -57,6 +59,8 @@ extern volatile unsigned long current_bt_beep_actual_end_time;
 // --- Timer State Variables ---
 extern volatile bool is_listening_active;      // Flag to enable/disable mic reading after start beep
 extern volatile unsigned long beep_audio_end_time; // Calculated time when start beep audio should be finished
+extern unsigned long liveFireDelayEndTime;
+extern bool liveFireWaitingForDelay;
 
 
 // Bluetooth Scanner Variables
