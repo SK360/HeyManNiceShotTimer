@@ -452,6 +452,7 @@ void handleOtaUpdateLoop() {
     // Allow cancel only when not mid-upload
     if (!otaInProgress && StickCP2.BtnA.pressedFor(LONG_PRESS_DURATION_MS)) {
         stopOtaUpdate();
+        resetActivityTimer();
         settingsMenuLevel = 6;
         setState(SETTINGS_MENU_DEVICE);
         currentMenuSelection = 5; // "WiFi Settings" index in deviceItems
