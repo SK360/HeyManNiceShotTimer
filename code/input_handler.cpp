@@ -59,10 +59,11 @@ void handleSettingsInput() {
     int rotation = StickCP2.Lcd.getRotation();
     int itemsPerScreen = (rotation % 2 == 0) ? MENU_ITEMS_PER_SCREEN_PORTRAIT : MENU_ITEMS_PER_SCREEN_LANDSCAPE;
 
-    static const char* mainItems[] = {"General", "Bluetooth", "Dry Fire", "Noisy Range", "Device Status", "List Files", "Power Off Now", "Save & Exit"};
-    static const char* generalItems[] = {"Max Shots", "Beep Settings", "Shot Threshold", "Min 1st Shot", "Post Beep Delay", "Screen Rotation", "Boot Animation", "Auto Sleep", "Show Total Time", "Calibrate Thresh.", "Back"};
-    static const char* beepItems[] = {"Beep Duration", "Beep Tone", "Tone Sweep", "Back"};
+    static const char* mainItems[] = {"Live Fire", "Dry Fire", "Noisy Range", "Beep Settings", "Bluetooth", "Device", "Power Off Now", "Save & Exit"};
+    static const char* liveFireItems[] = {"Max Shots", "Shot Threshold", "Min 1st Shot", "Start Delay Min", "Start Delay Max", "Calibrate Thresh.", "Back"};
+    static const char* beepItems[] = {"Beep Duration", "Beep Tone", "Post Beep Delay", "Tone Sweep", "Back"};
     static const char* noisyItems[] = {"Recoil Threshold", "Calibrate Recoil", "Back"};
+    static const char* deviceItems[] = {"Screen Rotation", "Boot Animation", "Auto Sleep", "Device Status", "List Files", "Back"};
 
     const int maxDryFireItems = 1 + MAX_PAR_BEEPS + 1;
     static const char* dryFireItemsBuffer[maxDryFireItems];
@@ -78,9 +79,9 @@ void handleSettingsInput() {
             title = "Settings";
             break;
         case 1:
-            items = generalItems;
-            itemCount = sizeof(generalItems) / sizeof(generalItems[0]);
-            title = "General Settings";
+            items = liveFireItems;
+            itemCount = sizeof(liveFireItems) / sizeof(liveFireItems[0]);
+            title = "Live Fire Settings";
             break;
         case 2:
             title = "Dry Fire Settings";
@@ -103,7 +104,12 @@ void handleSettingsInput() {
              itemCount = sizeof(beepItems) / sizeof(beepItems[0]);
              title = "Beep Settings";
              break;
-        case 5: 
+        case 6:
+            items = deviceItems;
+            itemCount = sizeof(deviceItems) / sizeof(deviceItems[0]);
+            title = "Device Settings";
+            break;
+        case 5:
             title = "Bluetooth Settings";
             bluetoothItems[0] = "Connect"; 
             bluetoothItems[1] = "Disconnect";
@@ -146,14 +152,18 @@ void handleSettingsInput() {
          if (settingsMenuLevel == 0) {
              setState(MODE_SELECTION); currentMenuSelection = (int)currentMode; menuScrollOffset = 0;
              StickCP2.Lcd.fillScreen(BLACK);
-         } else if (settingsMenuLevel == 1 || settingsMenuLevel == 2 || settingsMenuLevel == 3 || settingsMenuLevel == 5) {
+         } else {
              int oldMenuLevel = settingsMenuLevel;
              settingsMenuLevel = 0;
-             currentMenuSelection = (oldMenuLevel == 5 ? 1 : (oldMenuLevel == 2 ? 2 : (oldMenuLevel == 3 ? 3 : 0) ) ); 
-             menuScrollOffset = 0;
-             redrawMenu = true;
-         } else if (settingsMenuLevel == 4) {
-             settingsMenuLevel = 1; currentMenuSelection = 1; 
+             switch (oldMenuLevel) {
+                 case 1: currentMenuSelection = 0; break; // Live Fire
+                 case 2: currentMenuSelection = 1; break; // Dry Fire
+                 case 3: currentMenuSelection = 2; break; // Noisy Range
+                 case 4: currentMenuSelection = 3; break; // Beep Settings
+                 case 5: currentMenuSelection = 4; break; // Bluetooth
+                 case 6: currentMenuSelection = 5; break; // Device
+                 default: currentMenuSelection = 0; break;
+             }
              menuScrollOffset = 0; redrawMenu = true;
          }
          return;
@@ -163,16 +173,12 @@ void handleSettingsInput() {
         bool needsActionRedraw = true;
 
         if (settingsMenuLevel == 0) {
-            if (strcmp(items[currentMenuSelection], "General") == 0) settingsMenuLevel = 1;
-            else if (strcmp(items[currentMenuSelection], "Bluetooth") == 0) settingsMenuLevel = 5;
+            if (strcmp(items[currentMenuSelection], "Live Fire") == 0) settingsMenuLevel = 1;
             else if (strcmp(items[currentMenuSelection], "Dry Fire") == 0) settingsMenuLevel = 2;
             else if (strcmp(items[currentMenuSelection], "Noisy Range") == 0) settingsMenuLevel = 3;
-            else if (strcmp(items[currentMenuSelection], "Device Status") == 0) {
-                setState(DEVICE_STATUS); needsActionRedraw = false; StickCP2.Lcd.fillScreen(BLACK);
-            }
-            else if (strcmp(items[currentMenuSelection], "List Files") == 0) {
-                setState(LIST_FILES); fileListScrollOffset = 0; needsActionRedraw = false; StickCP2.Lcd.fillScreen(BLACK);
-            }
+            else if (strcmp(items[currentMenuSelection], "Beep Settings") == 0) settingsMenuLevel = 4;
+            else if (strcmp(items[currentMenuSelection], "Bluetooth") == 0) settingsMenuLevel = 5;
+            else if (strcmp(items[currentMenuSelection], "Device") == 0) settingsMenuLevel = 6;
             else if (strcmp(items[currentMenuSelection], "Power Off Now") == 0) {
                 StickCP2.Lcd.fillScreen(BLACK);
                 StickCP2.Lcd.setTextDatum(MC_DATUM);
@@ -187,31 +193,23 @@ void handleSettingsInput() {
             }
             currentMenuSelection = 0; menuScrollOffset = 0;
         }
-        else if (settingsMenuLevel == 1) { 
+        else if (settingsMenuLevel == 1) {
             editingSettingName = items[currentMenuSelection];
             stateBeforeEdit = SETTINGS_MENU_GENERAL;
             if (strcmp(editingSettingName, "Max Shots") == 0) {
                 settingBeingEdited = EDIT_MAX_SHOTS; editingIntValue = currentMaxShots; setState(EDIT_SETTING); needsActionRedraw = false; StickCP2.Lcd.fillScreen(BLACK);
-            } else if (strcmp(editingSettingName, "Beep Settings") == 0) {
-                settingsMenuLevel = 4; currentMenuSelection = 0; menuScrollOffset = 0; 
             } else if (strcmp(editingSettingName, "Shot Threshold") == 0) {
                 settingBeingEdited = EDIT_SHOT_THRESHOLD; editingIntValue = shotThresholdRms; setState(EDIT_SETTING); needsActionRedraw = false; StickCP2.Lcd.fillScreen(BLACK);
             } else if (strcmp(editingSettingName, "Min 1st Shot") == 0) {
                 settingBeingEdited = EDIT_MIN_FIRST_SHOT; editingIntValue = minFirstShotTimeMs; setState(EDIT_SETTING); needsActionRedraw = false; StickCP2.Lcd.fillScreen(BLACK);
-            } else if (strcmp(editingSettingName, "Post Beep Delay") == 0) {
-                settingBeingEdited = EDIT_POST_BEEP_DELAY; editingIntValue = postBeepDelayMs; setState(EDIT_SETTING); needsActionRedraw = false; StickCP2.Lcd.fillScreen(BLACK);
-            } else if (strcmp(editingSettingName, "Screen Rotation") == 0) {
-                settingBeingEdited = EDIT_ROTATION; editingIntValue = screenRotationSetting; setState(EDIT_SETTING); needsActionRedraw = false; StickCP2.Lcd.fillScreen(BLACK);
-            } else if (strcmp(editingSettingName, "Boot Animation") == 0) {
-                settingBeingEdited = EDIT_BOOT_ANIM; editingBoolValue = playBootAnimation; setState(EDIT_SETTING); needsActionRedraw = false; StickCP2.Lcd.fillScreen(BLACK);
-            } else if (strcmp(editingSettingName, "Auto Sleep") == 0) {
-                settingBeingEdited = EDIT_AUTO_SLEEP; editingBoolValue = enableAutoSleep; setState(EDIT_SETTING); needsActionRedraw = false; StickCP2.Lcd.fillScreen(BLACK);
-            } else if (strcmp(editingSettingName, "Show Total Time") == 0) {
-                settingBeingEdited = EDIT_SHOW_TOTAL_TIME; editingBoolValue = showTotalTime; setState(EDIT_SETTING); needsActionRedraw = false; StickCP2.Lcd.fillScreen(BLACK);
+            } else if (strcmp(editingSettingName, "Start Delay Min") == 0) {
+                settingBeingEdited = EDIT_START_DELAY_MIN; editingIntValue = startDelayMinMs; setState(EDIT_SETTING); needsActionRedraw = false; StickCP2.Lcd.fillScreen(BLACK);
+            } else if (strcmp(editingSettingName, "Start Delay Max") == 0) {
+                settingBeingEdited = EDIT_START_DELAY_MAX; editingIntValue = startDelayMaxMs; setState(EDIT_SETTING); needsActionRedraw = false; StickCP2.Lcd.fillScreen(BLACK);
             } else if (strcmp(editingSettingName, "Calibrate Thresh.") == 0) {
                 setState(CALIBRATE_THRESHOLD); peakRMSOverall = 0; micPeakRMS.resetPeak(); needsActionRedraw = false; StickCP2.Lcd.fillScreen(BLACK);
             } else if (strcmp(editingSettingName, "Back") == 0) {
-                settingsMenuLevel = 0; currentMenuSelection = 0; menuScrollOffset = 0; 
+                settingsMenuLevel = 0; currentMenuSelection = 0; menuScrollOffset = 0;
             }
         }
         else if (settingsMenuLevel == 2) { 
@@ -235,10 +233,10 @@ void handleSettingsInput() {
                     StickCP2.Lcd.fillScreen(BLACK);
                 }
             } else if (strcmp(items[currentMenuSelection], "Back") == 0) {
-                settingsMenuLevel = 0; currentMenuSelection = 2; menuScrollOffset = 0; 
+                settingsMenuLevel = 0; currentMenuSelection = 1; menuScrollOffset = 0;
             }
         }
-        else if (settingsMenuLevel == 3) { 
+        else if (settingsMenuLevel == 3) {
             editingSettingName = items[currentMenuSelection];
             stateBeforeEdit = SETTINGS_MENU_NOISY;
             if (strcmp(editingSettingName, "Recoil Threshold") == 0) {
@@ -246,20 +244,22 @@ void handleSettingsInput() {
             } else if (strcmp(editingSettingName, "Calibrate Recoil") == 0) {
                 setState(CALIBRATE_RECOIL); needsActionRedraw = false; StickCP2.Lcd.fillScreen(BLACK); peakRecoilValue = 0;
             } else if (strcmp(editingSettingName, "Back") == 0) {
-                settingsMenuLevel = 0; currentMenuSelection = 3; menuScrollOffset = 0; 
+                settingsMenuLevel = 0; currentMenuSelection = 2; menuScrollOffset = 0;
             }
         }
-        else if (settingsMenuLevel == 4) { 
+        else if (settingsMenuLevel == 4) {
             editingSettingName = items[currentMenuSelection];
             stateBeforeEdit = SETTINGS_MENU_BEEP;
-             if (strcmp(editingSettingName, "Beep Duration") == 0) {
+            if (strcmp(editingSettingName, "Beep Duration") == 0) {
                 settingBeingEdited = EDIT_BEEP_DURATION; editingULongValue = currentBeepDuration; setState(EDIT_SETTING); needsActionRedraw = false; StickCP2.Lcd.fillScreen(BLACK);
             } else if (strcmp(editingSettingName, "Beep Tone") == 0) {
                 settingBeingEdited = EDIT_BEEP_TONE; editingIntValue = currentBeepToneHz; setState(EDIT_SETTING); needsActionRedraw = false; StickCP2.Lcd.fillScreen(BLACK);
+            } else if (strcmp(editingSettingName, "Post Beep Delay") == 0) {
+                settingBeingEdited = EDIT_POST_BEEP_DELAY; editingIntValue = postBeepDelayMs; setState(EDIT_SETTING); needsActionRedraw = false; StickCP2.Lcd.fillScreen(BLACK);
             } else if (strcmp(editingSettingName, "Tone Sweep") == 0) {
                 settingBeingEdited = EDIT_TONE_SWEEP; editingIntValue = 2000; setState(EDIT_SETTING); needsActionRedraw = false; StickCP2.Lcd.fillScreen(BLACK);
             } else if (strcmp(editingSettingName, "Back") == 0) {
-                settingsMenuLevel = 1; currentMenuSelection = 1; 
+                settingsMenuLevel = 0; currentMenuSelection = 3;
                 menuScrollOffset = 0;
             }
         }
@@ -339,7 +339,24 @@ void handleSettingsInput() {
                 // --- End Scan Setup ---
             }
             else if (strcmp(items[currentMenuSelection], "Back") == 0) {
-                settingsMenuLevel = 0; currentMenuSelection = 1; menuScrollOffset = 0; 
+                settingsMenuLevel = 0; currentMenuSelection = 4; menuScrollOffset = 0;
+            }
+        }
+        else if (settingsMenuLevel == 6) {
+            editingSettingName = items[currentMenuSelection];
+            stateBeforeEdit = SETTINGS_MENU_DEVICE;
+            if (strcmp(editingSettingName, "Screen Rotation") == 0) {
+                settingBeingEdited = EDIT_ROTATION; editingIntValue = screenRotationSetting; setState(EDIT_SETTING); needsActionRedraw = false; StickCP2.Lcd.fillScreen(BLACK);
+            } else if (strcmp(editingSettingName, "Boot Animation") == 0) {
+                settingBeingEdited = EDIT_BOOT_ANIM; editingBoolValue = playBootAnimation; setState(EDIT_SETTING); needsActionRedraw = false; StickCP2.Lcd.fillScreen(BLACK);
+            } else if (strcmp(editingSettingName, "Auto Sleep") == 0) {
+                settingBeingEdited = EDIT_AUTO_SLEEP; editingBoolValue = enableAutoSleep; setState(EDIT_SETTING); needsActionRedraw = false; StickCP2.Lcd.fillScreen(BLACK);
+            } else if (strcmp(editingSettingName, "Device Status") == 0) {
+                setState(DEVICE_STATUS); needsActionRedraw = false; StickCP2.Lcd.fillScreen(BLACK);
+            } else if (strcmp(editingSettingName, "List Files") == 0) {
+                setState(LIST_FILES); fileListScrollOffset = 0; needsActionRedraw = false; StickCP2.Lcd.fillScreen(BLACK);
+            } else if (strcmp(editingSettingName, "Back") == 0) {
+                settingsMenuLevel = 0; currentMenuSelection = 5; menuScrollOffset = 0;
             }
         }
         if (needsActionRedraw) redrawMenu = true;
@@ -358,7 +375,13 @@ void handleEditSettingInput() {
         int increment = upPressed ? 1 : -1;
 
         switch(settingBeingEdited) {
-            case EDIT_MAX_SHOTS: editingIntValue = min(max(editingIntValue + increment, 1), MAX_SHOTS_LIMIT); break;
+            case EDIT_MAX_SHOTS: {
+                int newVal = editingIntValue + increment;
+                if (newVal > MAX_SHOTS_LIMIT) newVal = 0;
+                else if (newVal < 0) newVal = MAX_SHOTS_LIMIT;
+                editingIntValue = newVal;
+                break;
+            }
             case EDIT_BEEP_DURATION: editingULongValue = min(max(editingULongValue + (unsigned long)(increment * 50), 50UL), 2000UL); break;
             case EDIT_BEEP_TONE: editingIntValue = min(max(editingIntValue + (increment * 100), 500), 8000); break;
             case EDIT_SHOT_THRESHOLD: editingIntValue = min(max(editingIntValue + (increment * 500), 100), 32000); break;
@@ -370,7 +393,6 @@ void handleEditSettingInput() {
             case EDIT_ROTATION: editingIntValue = (editingIntValue + increment + 4) % 4; break;
             case EDIT_BOOT_ANIM: editingBoolValue = !editingBoolValue; break;
             case EDIT_AUTO_SLEEP: editingBoolValue = !editingBoolValue; break;
-            case EDIT_SHOW_TOTAL_TIME: editingBoolValue = !editingBoolValue; break;
             case EDIT_BT_AUTO_RECONNECT: editingBoolValue = !editingBoolValue; break;
             case EDIT_BT_VOLUME:
                 editingIntValue = min(max(editingIntValue + (increment * 5), 0), 127);
@@ -387,6 +409,12 @@ void handleEditSettingInput() {
                 editingIntValue = min(max(editingIntValue + (increment * 50), 2000), 4000);
                 playFeedbackTone(editingIntValue, 100);
                 break;
+            case EDIT_START_DELAY_MIN:
+                editingIntValue = min(max(editingIntValue + (increment * 250), 0), min(startDelayMaxMs, MAX_START_DELAY_MS));
+                break;
+            case EDIT_START_DELAY_MAX:
+                editingIntValue = min(max(editingIntValue + (increment * 250), startDelayMinMs), MAX_START_DELAY_MS);
+                break;
             default: valueChanged = false; break;
         }
         if (settingBeingEdited == EDIT_ROTATION) {
@@ -396,7 +424,6 @@ void handleEditSettingInput() {
         if (valueChanged && 
             settingBeingEdited != EDIT_BOOT_ANIM && 
             settingBeingEdited != EDIT_AUTO_SLEEP && 
-            settingBeingEdited != EDIT_SHOW_TOTAL_TIME &&
             settingBeingEdited != EDIT_BT_AUTO_RECONNECT &&
             settingBeingEdited != EDIT_BT_AUDIO_OFFSET &&
             settingBeingEdited != EDIT_TONE_SWEEP) { 
@@ -434,7 +461,6 @@ void handleEditSettingInput() {
             case EDIT_ROTATION: screenRotationSetting = editingIntValue; break;
             case EDIT_BOOT_ANIM: playBootAnimation = editingBoolValue; break;
             case EDIT_AUTO_SLEEP: enableAutoSleep = editingBoolValue; break;
-            case EDIT_SHOW_TOTAL_TIME: showTotalTime = editingBoolValue; break;
             case EDIT_BT_AUTO_RECONNECT:
                 currentBluetoothAutoReconnect = editingBoolValue;
                 break;
@@ -442,9 +468,11 @@ void handleEditSettingInput() {
                 currentBluetoothVolume = editingIntValue;
                 a2dp_source.set_volume(currentBluetoothVolume);
                 break;
-            case EDIT_BT_AUDIO_OFFSET: 
+            case EDIT_BT_AUDIO_OFFSET:
                 currentBluetoothAudioOffsetMs = editingIntValue;
                 break;
+            case EDIT_START_DELAY_MIN: startDelayMinMs = editingIntValue; break;
+            case EDIT_START_DELAY_MAX: startDelayMaxMs = editingIntValue; break;
             default: break;
         }
         setState(stateBeforeEdit);
@@ -467,11 +495,10 @@ void handleDeviceStatusInput() {
         redrawMenu = false;
     }
     if (StickCP2.BtnA.pressedFor(LONG_PRESS_DURATION_MS)) {
-        setState(SETTINGS_MENU_MAIN);
-        currentMenuSelection = 4; 
-        int rotation = StickCP2.Lcd.getRotation();
-        int itemsPerScreen = (rotation % 2 == 0) ? MENU_ITEMS_PER_SCREEN_PORTRAIT : MENU_ITEMS_PER_SCREEN_LANDSCAPE;
-        menuScrollOffset = max(0, currentMenuSelection - itemsPerScreen + 1);
+        setState(SETTINGS_MENU_DEVICE);
+        settingsMenuLevel = 6;
+        currentMenuSelection = 3;
+        menuScrollOffset = 0;
         StickCP2.Lcd.fillScreen(BLACK);
     }
 }
@@ -520,9 +547,10 @@ void handleListFilesInput() {
     }
 
      if (StickCP2.BtnA.pressedFor(LONG_PRESS_DURATION_MS)) {
-         setState(SETTINGS_MENU_MAIN);
-         currentMenuSelection = 5; 
-         menuScrollOffset = max(0, currentMenuSelection - itemsPerScreen + 1);
+         setState(SETTINGS_MENU_DEVICE);
+         settingsMenuLevel = 6;
+         currentMenuSelection = 4;
+         menuScrollOffset = 0;
          StickCP2.Lcd.fillScreen(BLACK);
      }
 }
@@ -575,8 +603,9 @@ void handleCalibrationInput(TimerState calibrationType) {
 
     if (StickCP2.BtnA.pressedFor(LONG_PRESS_DURATION_MS)) {
         stateBeforeEdit = (calibrationType == CALIBRATE_THRESHOLD) ? SETTINGS_MENU_GENERAL : SETTINGS_MENU_NOISY;
+        settingsMenuLevel = (calibrationType == CALIBRATE_THRESHOLD) ? 1 : 3;
         setState(stateBeforeEdit);
-        currentMenuSelection = (calibrationType == CALIBRATE_THRESHOLD) ? 6 : 1; 
+        currentMenuSelection = (calibrationType == CALIBRATE_THRESHOLD) ? 5 : 1;
         menuScrollOffset = max(0, currentMenuSelection - itemsPerScreen + 1);
         StickCP2.Lcd.fillScreen(BLACK);
         playUnsuccessBeeps();
@@ -584,12 +613,14 @@ void handleCalibrationInput(TimerState calibrationType) {
         if (calibrationType == CALIBRATE_THRESHOLD) {
             shotThresholdRms = (int)peakRMSOverall;
             stateBeforeEdit = SETTINGS_MENU_GENERAL;
+            settingsMenuLevel = 1;
             setState(stateBeforeEdit);
-            currentMenuSelection = 6;
+            currentMenuSelection = 5;
             menuScrollOffset = max(0, currentMenuSelection - itemsPerScreen + 1);
         } else if (calibrationType == CALIBRATE_RECOIL) {
             recoilThreshold = peakRecoilValue;
             stateBeforeEdit = SETTINGS_MENU_NOISY;
+            settingsMenuLevel = 3;
             setState(stateBeforeEdit);
             currentMenuSelection = 1;
             menuScrollOffset = max(0, currentMenuSelection - itemsPerScreen + 1);

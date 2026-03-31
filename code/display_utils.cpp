@@ -99,7 +99,8 @@ void displayMenu(const char* title, const char* items[], int count, int selectio
                               strcmp(items[i], "Power Off Now") == 0 ||
                               strcmp(items[i], "Beep Settings") == 0 ||
                               strcmp(items[i], "Bluetooth Settings") == 0 ||
-                              strcmp(items[i], "Tone Sweep") == 0);
+                              strcmp(items[i], "Tone Sweep") == 0 ||
+                              strcmp(items[i], "Save & Exit") == 0);
 
         bool isParTimeSetting = (settingsMenuLevel == 2 && strncmp(items[i], "Par Time", 8) == 0);
         bool isBluetoothConnectItem = (settingsMenuLevel == 5 && strcmp(items[i], "Connect") == 0 );
@@ -108,7 +109,7 @@ void displayMenu(const char* title, const char* items[], int count, int selectio
 
         if (settingsMenuLevel > 0 && !isNavOrAction && !isParTimeSetting && !isBluetoothConnectItem && !isBluetoothScanItem && !isBluetoothDisconnectItem) {
             itemText += ": ";
-            if (strcmp(items[i], "Max Shots") == 0) itemText += currentMaxShots;
+            if (strcmp(items[i], "Max Shots") == 0) { if (currentMaxShots == 0) itemText += "Off"; else itemText += currentMaxShots; }
             else if (strcmp(items[i], "Beep Duration") == 0) itemText += currentBeepDuration;
             else if (strcmp(items[i], "Beep Tone") == 0) itemText += currentBeepToneHz;
             else if (strcmp(items[i], "Shot Threshold") == 0) itemText += shotThresholdRms;
@@ -117,9 +118,11 @@ void displayMenu(const char* title, const char* items[], int count, int selectio
             else if (strcmp(items[i], "Screen Rotation") == 0) itemText += screenRotationSetting;
             else if (strcmp(items[i], "Boot Animation") == 0) itemText += (playBootAnimation ? "On" : "Off");
             else if (strcmp(items[i], "Auto Sleep") == 0) itemText += (enableAutoSleep ? "On" : "Off");
-            else if (strcmp(items[i], "Show Total Time") == 0) itemText += (showTotalTime ? "On" : "Off");
+
             else if (strcmp(items[i], "Min 1st Shot") == 0) { itemText += minFirstShotTimeMs; itemText += "ms"; }
             else if (strcmp(items[i], "Post Beep Delay") == 0) { itemText += postBeepDelayMs; itemText += "ms"; }
+            else if (strcmp(items[i], "Start Delay Min") == 0) { itemText += startDelayMinMs; itemText += "ms"; }
+            else if (strcmp(items[i], "Start Delay Max") == 0) { itemText += startDelayMaxMs; itemText += "ms"; }
             else if (settingsMenuLevel == 5 && strcmp(items[i], "Auto Reconnect") == 0) {
                 itemText += (currentBluetoothAutoReconnect ? "On" : "Off");
             }
@@ -196,7 +199,8 @@ void displayTimingScreen(float elapsedTime, int count, float lastSplit) {
         StickCP2.Lcd.setTextSize(text_size);
         StickCP2.Lcd.fillRect(10, shots_y, StickCP2.Lcd.width() - 20, line_h, BLACK);
         StickCP2.Lcd.setCursor(10, shots_y);
-        StickCP2.Lcd.printf("Shots: %d/%d", count, currentMaxShots);
+        if (currentMaxShots == 0) StickCP2.Lcd.printf("Shots: %d", count);
+        else StickCP2.Lcd.printf("Shots: %d/%d", count, currentMaxShots);
         prevCount = count;
     }
 
@@ -233,17 +237,15 @@ void displayStoppedScreen() {
 
     StickCP2.Lcd.setTextSize(text_size);
 
-    if (showTotalTime && shotCount > 0) {
-        // Show total elapsed time (buzzer to last shot) with shot count
+    if (shotCount > 0) {
         float totalTime = (shotTimestamps[shotCount - 1] - startTime) / 1000.0f;
         StickCP2.Lcd.setCursor(10, y_pos);
         StickCP2.Lcd.printf("Total: %.2fs (%d)", totalTime, shotCount);
-        y_pos += line_h;
     } else {
         StickCP2.Lcd.setCursor(10, y_pos);
         StickCP2.Lcd.printf("Total Shots: %d", shotCount);
-        y_pos += line_h;
     }
+    y_pos += line_h;
 
     StickCP2.Lcd.setCursor(10, y_pos);
     if (shotCount > 0) { StickCP2.Lcd.printf("First: %.2fs", splitTimes[0]); }
@@ -345,7 +347,7 @@ void displayEditScreen() {
         StickCP2.Lcd.setTextDatum(BC_DATUM);
         StickCP2.Lcd.setTextFont(0);
         StickCP2.Lcd.setTextSize(1);
-        if (settingBeingEdited == EDIT_BOOT_ANIM || settingBeingEdited == EDIT_AUTO_SLEEP || settingBeingEdited == EDIT_BT_AUTO_RECONNECT || settingBeingEdited == EDIT_SHOW_TOTAL_TIME) {
+        if (settingBeingEdited == EDIT_BOOT_ANIM || settingBeingEdited == EDIT_AUTO_SLEEP || settingBeingEdited == EDIT_BT_AUTO_RECONNECT) {
             StickCP2.Lcd.drawString(getUpButtonLabel() + " or " + getDownButtonLabel() + " = Toggle", StickCP2.Lcd.width() / 2, StickCP2.Lcd.height() - 25);
         } else {
             StickCP2.Lcd.drawString(getUpButtonLabel() + "=Up / " + getDownButtonLabel() + "=Down", StickCP2.Lcd.width() / 2, StickCP2.Lcd.height() - 25);
@@ -357,6 +359,14 @@ void displayEditScreen() {
 
     switch(settingBeingEdited) {
         case EDIT_MAX_SHOTS:
+             if (editingIntValue == 0) {
+                 StickCP2.Lcd.setTextFont(4); StickCP2.Lcd.setTextSize(1);
+                 StickCP2.Lcd.drawString("Off", StickCP2.Lcd.width() / 2, StickCP2.Lcd.height() / 2);
+             } else {
+                 StickCP2.Lcd.setTextFont(7); StickCP2.Lcd.setTextSize(1);
+                 StickCP2.Lcd.drawNumber(editingIntValue, StickCP2.Lcd.width() / 2, StickCP2.Lcd.height() / 2);
+             }
+             break;
         case EDIT_BEEP_TONE:
         case EDIT_SHOT_THRESHOLD:
         case EDIT_PAR_BEEP_COUNT:
@@ -365,10 +375,13 @@ void displayEditScreen() {
         case EDIT_BT_AUDIO_OFFSET: 
         case EDIT_MIN_FIRST_SHOT:
         case EDIT_POST_BEEP_DELAY:
+        case EDIT_START_DELAY_MIN:
+        case EDIT_START_DELAY_MAX:
         case EDIT_TONE_SWEEP:
              StickCP2.Lcd.setTextFont(7); StickCP2.Lcd.setTextSize(1);
              StickCP2.Lcd.drawNumber(editingIntValue, StickCP2.Lcd.width() / 2, StickCP2.Lcd.height() / 2);
-             if (settingBeingEdited == EDIT_BT_AUDIO_OFFSET || settingBeingEdited == EDIT_MIN_FIRST_SHOT || settingBeingEdited == EDIT_POST_BEEP_DELAY) { 
+             if (settingBeingEdited == EDIT_BT_AUDIO_OFFSET || settingBeingEdited == EDIT_MIN_FIRST_SHOT || settingBeingEdited == EDIT_POST_BEEP_DELAY ||
+                 settingBeingEdited == EDIT_START_DELAY_MIN || settingBeingEdited == EDIT_START_DELAY_MAX) {
                 StickCP2.Lcd.setTextFont(0); StickCP2.Lcd.setTextSize(1); 
                 StickCP2.Lcd.drawString("ms", StickCP2.Lcd.width() / 2 + StickCP2.Lcd.textWidth(String(editingIntValue))/2 + 15, StickCP2.Lcd.height() / 2);
              }
@@ -389,7 +402,6 @@ void displayEditScreen() {
         case EDIT_BOOT_ANIM:
         case EDIT_AUTO_SLEEP:
         case EDIT_BT_AUTO_RECONNECT:
-        case EDIT_SHOW_TOTAL_TIME:
              StickCP2.Lcd.setTextFont(4); StickCP2.Lcd.setTextSize(1);
              StickCP2.Lcd.drawString(editingBoolValue ? "On" : "Off", StickCP2.Lcd.width() / 2, StickCP2.Lcd.height() / 2);
              break;

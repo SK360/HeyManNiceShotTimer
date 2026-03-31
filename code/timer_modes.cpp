@@ -27,19 +27,36 @@ void handleLiveFireReady() {
     }
     if (StickCP2.BtnA.wasClicked()) {
         resetActivityTimer();
-        reset_bt_beep_state(); 
-        is_listening_active = false; 
-        setState(LIVE_FIRE_GET_READY);
+        reset_bt_beep_state();
+        is_listening_active = false;
         StickCP2.Lcd.fillScreen(BLACK);
         StickCP2.Lcd.setTextDatum(MC_DATUM);
         StickCP2.Lcd.setTextFont(0);
         StickCP2.Lcd.setTextSize(3);
         StickCP2.Lcd.drawString("Ready...", StickCP2.Lcd.width()/2, StickCP2.Lcd.height()/2);
-        delay(1000); 
+        delay(1000);
+        randomSeed(micros());
+        unsigned long randomDelay = random(startDelayMinMs, startDelayMaxMs + 1);
+        liveFireDelayEndTime = millis() + randomDelay;
+        liveFireWaitingForDelay = true;
+        setState(LIVE_FIRE_GET_READY);
     }
 }
 
 void handleLiveFireGetReady() {
+    if (liveFireWaitingForDelay) {
+        if (StickCP2.BtnA.wasClicked()) {
+            liveFireWaitingForDelay = false;
+            setState(LIVE_FIRE_READY);
+            StickCP2.Lcd.fillScreen(BLACK);
+            playUnsuccessBeeps();
+            return;
+        }
+        if (millis() < liveFireDelayEndTime) {
+            return;
+        }
+        liveFireWaitingForDelay = false;
+    }
     resetActivityTimer();
     unsigned long beepInitiationTime = millis();
     playTone(currentBeepToneHz, currentBeepDuration); // Only plays on BT if connected, otherwise queues for buzzer
@@ -110,11 +127,12 @@ void handleLiveFireTiming() {
     }
 
     // Shot Detection Logic 
-    if (currentCyclePeakRMS > shotThresholdRms && 
-        currentTime - lastDetectionTime > SHOT_REFRACTORY_MS && 
-        shotCount < currentMaxShots && 
+    if (currentCyclePeakRMS > shotThresholdRms &&
+        currentTime - lastDetectionTime > SHOT_REFRACTORY_MS &&
+        shotCount < MAX_SHOTS_LIMIT &&
+        (currentMaxShots == 0 || shotCount < currentMaxShots) &&
         startTime > 0 &&
-        (shotCount > 0 || (currentTime - startTime) >= minFirstShotTimeMs)) 
+        (shotCount > 0 || (currentTime - startTime) >= minFirstShotTimeMs))
     {
         unsigned long shotTimeMillis = currentTime; 
         resetActivityTimer();
@@ -134,8 +152,8 @@ void handleLiveFireTiming() {
         displayTimingScreen(currentElapsedTime, shotCount, currentSplit); 
         lastDisplayUpdateTime = currentTime; 
 
-        if (shotCount >= currentMaxShots) {
-            is_listening_active = false; 
+        if (currentMaxShots > 0 && shotCount >= currentMaxShots) {
+            is_listening_active = false;
             setState(LIVE_FIRE_STOPPED);
             StickCP2.Lcd.fillScreen(BLACK);
             displayStoppedScreen();
@@ -370,9 +388,10 @@ void handleNoisyRangeTiming() {
     if (!checkingForRecoil &&
         currentCyclePeakRMS > shotThresholdRms &&
         currentTime - lastDetectionTime > SHOT_REFRACTORY_MS &&
-        shotCount < currentMaxShots &&
+        shotCount < MAX_SHOTS_LIMIT &&
+        (currentMaxShots == 0 || shotCount < currentMaxShots) &&
         startTime > 0 &&
-        (shotCount > 0 || (currentTime - startTime) >= minFirstShotTimeMs)) 
+        (shotCount > 0 || (currentTime - startTime) >= minFirstShotTimeMs))
     {
         lastSoundPeakTime = currentTime;
         checkingForRecoil = true;
@@ -404,13 +423,13 @@ void handleNoisyRangeTiming() {
             lastSoundPeakTime = 0;
             micPeakRMS.resetPeak(); // Reset peak after successful shot registration
 
-            if (shotCount >= currentMaxShots) {
+            if (currentMaxShots > 0 && shotCount >= currentMaxShots) {
                 is_listening_active = false;
-                setState(LIVE_FIRE_STOPPED); 
+                setState(LIVE_FIRE_STOPPED);
                 StickCP2.Lcd.fillScreen(BLACK);
                 displayStoppedScreen();
                 if (shotCount > 0) playSuccessBeeps(); else playUnsuccessBeeps();
-                return; 
+                return;
             }
         }
         else if (currentTime - lastSoundPeakTime > RECOIL_DETECTION_WINDOW_MS) {

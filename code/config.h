@@ -11,7 +11,7 @@ const unsigned long BEEP_NOTE_DURATION_MS = 150;
 const unsigned long BEEP_NOTE_DELAY_MS = 50;
 const unsigned long BATTERY_CHECK_INTERVAL_MS = 60000;
 const float BATTERY_LOW_PERCENTAGE = 0.78f;
-const int MAX_SHOTS_LIMIT = 20;
+const int MAX_SHOTS_LIMIT = 99;
 const int MENU_ITEM_HEIGHT_LANDSCAPE = 25;
 const int MENU_ITEM_HEIGHT_PORTRAIT = 18;
 const int MENU_ITEMS_PER_SCREEN_LANDSCAPE = 3;
@@ -26,6 +26,9 @@ const unsigned long DRY_FIRE_RANDOM_DELAY_MAX_MS = 5000;
 const int MAX_PAR_BEEPS = 10;
 const unsigned long RECOIL_DETECTION_WINDOW_MS = 100;
 const unsigned long DEFAULT_MIN_FIRST_SHOT_TIME_MS = 100; // Default min time after start for first shot
+const int DEFAULT_START_DELAY_MIN_MS = 2000;
+const int DEFAULT_START_DELAY_MAX_MS = 5000;
+const int MAX_START_DELAY_MS = 10000;
 const unsigned long AUTO_SLEEP_TIMEOUT_MS = 1 * 60 * 1000;
 const unsigned long SLEEP_MESSAGE_DELAY_MS = 1500;
 // #define C3_FREQUENCY 130.81f // No longer used for keep-alive
@@ -56,9 +59,11 @@ extern const char* KEY_BT_DEVICE_NAME;
 extern const char* KEY_BT_AUTO_RECONNECT;
 extern const char* KEY_BT_VOLUME;
 extern const char* KEY_BT_AUDIO_OFFSET; 
-extern const char* KEY_SHOW_TOTAL_TIME;
+
 extern const char* KEY_MIN_FIRST_SHOT;
 extern const char* KEY_POST_BEEP_DELAY;
+extern const char* KEY_START_DELAY_MIN;
+extern const char* KEY_START_DELAY_MAX;
 
 // --- Timer States ---
 enum TimerState {
@@ -80,6 +85,7 @@ enum TimerState {
     SETTINGS_MENU_DRYFIRE,
     SETTINGS_MENU_NOISY,
     SETTINGS_MENU_BLUETOOTH,
+    SETTINGS_MENU_DEVICE,
     BLUETOOTH_SCANNING,
     DEVICE_STATUS,
     LIST_FILES,
@@ -111,10 +117,12 @@ enum EditableSetting {
     EDIT_BT_AUTO_RECONNECT,
     EDIT_BT_VOLUME,
     EDIT_BT_AUDIO_OFFSET,
-    EDIT_SHOW_TOTAL_TIME,
+
     EDIT_MIN_FIRST_SHOT,
     EDIT_POST_BEEP_DELAY,
-    EDIT_TONE_SWEEP 
+    EDIT_TONE_SWEEP,
+    EDIT_START_DELAY_MIN,
+    EDIT_START_DELAY_MAX
 };
 
 // --- Struct for Buzzer Task Queue ---
