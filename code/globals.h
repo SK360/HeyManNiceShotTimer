@@ -31,7 +31,6 @@ extern int dryFireParBeepCount;
 extern float dryFireParTimesSec[MAX_PAR_BEEPS];
 extern float recoilThreshold;
 extern int screenRotationSetting;
-extern bool playBootAnimation;
 extern bool enableAutoSleep;
 
 extern int minFirstShotTimeMs;
@@ -114,11 +113,6 @@ extern unsigned long lastBatteryCheckTime;
 
 // Create an instance of the library
 extern M5MicPeakRMS micPeakRMS;
-
-// Boot Sequence Variables
-extern int currentJpgFrame;
-extern bool filesystem_ok_for_boot;
-extern unsigned long lastFrameTime;
 
 // Dry Fire Par Variables
 extern unsigned long randomDelayStartMs;

@@ -10,7 +10,6 @@ const char* KEY_DF_BEEP_CNT = "dfBeepCnt";
 const char* KEY_NR_RECOIL = "nrRecoil";
 const char* KEY_PEAK_BATT = "peakBatt";
 const char* KEY_ROTATION = "rotation";
-const char* KEY_BOOT_ANIM = "bootAnim";
 const char* KEY_AUTO_SLEEP = "autoSleep";
 const char* KEY_BT_DEVICE_NAME = "btDevName";
 const char* KEY_BT_AUTO_RECONNECT = "btAutoRec";

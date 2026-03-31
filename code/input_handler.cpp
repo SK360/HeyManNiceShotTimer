@@ -64,7 +64,7 @@ void handleSettingsInput() {
     static const char* liveFireItems[] = {"Max Shots", "Shot Threshold", "Min 1st Shot", "Start Delay Min", "Start Delay Max", "Calibrate Thresh.", "Back"};
     static const char* beepItems[] = {"Beep Duration", "Beep Tone", "Post Beep Delay", "Tone Sweep", "Back"};
     static const char* noisyItems[] = {"Recoil Threshold", "Calibrate Recoil", "Back"};
-    static const char* deviceItems[] = {"Screen Rotation", "Boot Animation", "Auto Sleep", "Device Status", "List Files", "WiFi Settings", "Back"};
+    static const char* deviceItems[] = {"Screen Rotation", "Auto Sleep", "Device Status", "List Files", "WiFi Settings", "Back"};
 
     const int maxDryFireItems = 1 + MAX_PAR_BEEPS + 1;
     static const char* dryFireItemsBuffer[maxDryFireItems];
@@ -348,8 +348,6 @@ void handleSettingsInput() {
             stateBeforeEdit = SETTINGS_MENU_DEVICE;
             if (strcmp(editingSettingName, "Screen Rotation") == 0) {
                 settingBeingEdited = EDIT_ROTATION; editingIntValue = screenRotationSetting; setState(EDIT_SETTING); needsActionRedraw = false; StickCP2.Lcd.fillScreen(BLACK);
-            } else if (strcmp(editingSettingName, "Boot Animation") == 0) {
-                settingBeingEdited = EDIT_BOOT_ANIM; editingBoolValue = playBootAnimation; setState(EDIT_SETTING); needsActionRedraw = false; StickCP2.Lcd.fillScreen(BLACK);
             } else if (strcmp(editingSettingName, "Auto Sleep") == 0) {
                 settingBeingEdited = EDIT_AUTO_SLEEP; editingBoolValue = enableAutoSleep; setState(EDIT_SETTING); needsActionRedraw = false; StickCP2.Lcd.fillScreen(BLACK);
             } else if (strcmp(editingSettingName, "Device Status") == 0) {
@@ -394,7 +392,6 @@ void handleEditSettingInput() {
             case EDIT_PAR_TIME_ARRAY: editingFloatValue = min(max(editingFloatValue + (increment * 0.1f), 0.1f), 10.0f); break;
             case EDIT_RECOIL_THRESHOLD: editingFloatValue = min(max(editingFloatValue + (increment * 0.1f), 0.5f), 5.0f); break;
             case EDIT_ROTATION: editingIntValue = (editingIntValue + increment + 4) % 4; break;
-            case EDIT_BOOT_ANIM: editingBoolValue = !editingBoolValue; break;
             case EDIT_AUTO_SLEEP: editingBoolValue = !editingBoolValue; break;
             case EDIT_BT_AUTO_RECONNECT: editingBoolValue = !editingBoolValue; break;
             case EDIT_BT_VOLUME:
@@ -424,8 +421,7 @@ void handleEditSettingInput() {
             StickCP2.Lcd.setRotation(editingIntValue);
             redrawMenu = true;
         }
-        if (valueChanged && 
-            settingBeingEdited != EDIT_BOOT_ANIM && 
+        if (valueChanged &&
             settingBeingEdited != EDIT_AUTO_SLEEP && 
             settingBeingEdited != EDIT_BT_AUTO_RECONNECT &&
             settingBeingEdited != EDIT_BT_AUDIO_OFFSET &&
@@ -462,7 +458,6 @@ void handleEditSettingInput() {
                 break;
             case EDIT_RECOIL_THRESHOLD: recoilThreshold = editingFloatValue; break;
             case EDIT_ROTATION: screenRotationSetting = editingIntValue; break;
-            case EDIT_BOOT_ANIM: playBootAnimation = editingBoolValue; break;
             case EDIT_AUTO_SLEEP: enableAutoSleep = editingBoolValue; break;
             case EDIT_BT_AUTO_RECONNECT:
                 currentBluetoothAutoReconnect = editingBoolValue;

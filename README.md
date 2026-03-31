@@ -62,7 +62,6 @@ Combines microphone detection with IMU (accelerometer) recoil detection. A shot 
 - **BT audio offset calibration** — compensate for Bluetooth latency to keep buzzer and speaker in sync
 - **WiFi settings page** — configure all settings and upload new firmware from a phone browser
 - **Screen rotation** — four orientations supported
-- **Boot animation** — optional JPG image sequence on startup
 - **Auto-sleep** — light sleep after 1 minute of inactivity (disabled when Bluetooth is connected)
 - **Device status screen** — battery voltage/%, IMU readings, LittleFS usage
 - **Dual-core FreeRTOS** — buzzer runs on Core 0 to avoid blocking display/logic on Core 1
@@ -99,7 +98,6 @@ SETTINGS
 │   └── Scan for Devices
 ├── Device
 │   ├── Screen Rotation    (0–3)
-│   ├── Boot Animation     (On/Off)
 │   ├── Auto Sleep         (On/Off)
 │   ├── Device Status
 │   ├── List Files
@@ -172,8 +170,6 @@ Install these **exact versions** — other versions may not be compatible:
 
 9. **Upload** — click the Upload button (or *Sketch → Upload*)
 
-> **Note:** To upload the boot animation filesystem, install the [arduino-littlefs-upload plugin](https://github.com/earlephilhower/arduino-littlefs-upload) and use *Tools → Upload LittleFS to Pico/ESP8266/ESP32*.
-
 ### arduino-cli / Makefile
 
 This project uses [arduino-cli](https://arduino.github.io/arduino-cli/). Install it, then install the board packages above.
@@ -213,12 +209,7 @@ code/
 ├── nvs_utils.h / nvs_utils.cpp
 ├── ota_utils.h / ota_utils.cpp
 ├── system_utils.h / system_utils.cpp
-└── data/                  ← optional boot animation JPGs (1.jpg, 2.jpg, ...)
 ```
-
-### Boot Animation (Optional)
-
-Place sequentially numbered JPG files (`1.jpg`, `2.jpg`, ...) in the `data/` folder, then run `make filesystem.bin && make flash-fs` to upload them. Enable via **Settings → Device → Boot Animation**.
 
 ---
 
@@ -230,7 +221,6 @@ Place sequentially numbered JPG files (`1.jpg`, `2.jpg`, ...) in the `data/` fol
 | **BtnA (front)** — long press | Back / Cancel |
 | **BtnB (side)** | Scroll down / Adjust value down |
 | **BtnPWR (top)** | Scroll up / Adjust value up |
-| **BtnA during boot animation** | Skip animation |
 
 ---
 

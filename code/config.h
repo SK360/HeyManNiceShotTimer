@@ -18,8 +18,6 @@ const int MENU_ITEMS_PER_SCREEN_LANDSCAPE = 3;
 const int MENU_ITEMS_PER_SCREEN_PORTRAIT = 5;
 const unsigned long DEFAULT_POST_BEEP_DELAY_MS = 200; // Default post-beep delay before timing starts
 const int MAX_FILES_LIST = 20;
-const unsigned long BOOT_JPG_FRAME_DELAY_MS = 100;
-const int MAX_BOOT_JPG_FRAMES = 150;
 const unsigned long MESSAGE_DISPLAY_MS = 2000;
 const unsigned long DRY_FIRE_RANDOM_DELAY_MIN_MS = 2000;
 const unsigned long DRY_FIRE_RANDOM_DELAY_MAX_MS = 5000;
@@ -53,7 +51,6 @@ extern const char* KEY_DF_BEEP_CNT;
 extern const char* KEY_NR_RECOIL;
 extern const char* KEY_PEAK_BATT;
 extern const char* KEY_ROTATION;
-extern const char* KEY_BOOT_ANIM;
 extern const char* KEY_AUTO_SLEEP;
 extern const char* KEY_BT_DEVICE_NAME;
 extern const char* KEY_BT_AUTO_RECONNECT;
@@ -67,8 +64,6 @@ extern const char* KEY_START_DELAY_MAX;
 
 // --- Timer States ---
 enum TimerState {
-    BOOT_SCREEN,
-    BOOT_JPG_SEQUENCE,
     MODE_SELECTION,
     LIVE_FIRE_READY,
     LIVE_FIRE_GET_READY,
@@ -113,7 +108,6 @@ enum EditableSetting {
     EDIT_PAR_TIME_ARRAY,
     EDIT_RECOIL_THRESHOLD,
     EDIT_ROTATION,
-    EDIT_BOOT_ANIM,
     EDIT_AUTO_SLEEP,
     EDIT_BT_AUTO_RECONNECT,
     EDIT_BT_VOLUME,

@@ -28,8 +28,8 @@
 
 
 // --- Global Variable Definitions ---
-TimerState currentState = BOOT_SCREEN;
-TimerState previousState = BOOT_SCREEN;
+TimerState currentState = MODE_SELECTION;
+TimerState previousState = MODE_SELECTION;
 TimerState stateBeforeEdit = SETTINGS_MENU_MAIN;
 TimerState stateBeforeScan = SETTINGS_MENU_BLUETOOTH;
 OperatingMode currentMode = MODE_LIVE_FIRE;
@@ -45,7 +45,6 @@ int dryFireParBeepCount = 3;
 float dryFireParTimesSec[MAX_PAR_BEEPS];
 float recoilThreshold = 1.5f;
 int screenRotationSetting = 3;
-bool playBootAnimation = false;
 bool enableAutoSleep = true;
 
 int minFirstShotTimeMs = 100;
@@ -120,10 +119,6 @@ unsigned long lastBatteryCheckTime = 0;
 
 M5MicPeakRMS micPeakRMS;
 
-int currentJpgFrame = 1;
-bool filesystem_ok_for_boot = false;
-unsigned long lastFrameTime = 0;
-
 unsigned long randomDelayStartMs = 0;
 unsigned long parTimerStartTime = 0;
 unsigned long beepSequenceStartTime = 0;
@@ -176,12 +171,8 @@ void setup() {
     }
 
     if(!LittleFS.begin()){
-        displayBootScreen("ERROR", "", "FS Failed!");
-        // playUnsuccessBeeps(); 
+        displayBootScreen("WARNING", "", "FS Failed!");
         delay(2000);
-        filesystem_ok_for_boot = false;
-    } else {
-        filesystem_ok_for_boot = true;
     }
 
     // --- Create Buzzer Task and Queue ---
@@ -227,18 +218,11 @@ void setup() {
 
     resetActivityTimer();
 
-    if (filesystem_ok_for_boot && playBootAnimation) {
-        setState(BOOT_JPG_SEQUENCE);
-        currentJpgFrame = 1;
-        lastFrameTime = 0;
-        StickCP2.Lcd.fillScreen(BLACK);
-    } else {
-        delay(1000); 
-        setState(MODE_SELECTION);
-        currentMenuSelection = (int)currentMode;
-        menuScrollOffset = 0;
-        StickCP2.Lcd.fillScreen(BLACK);
-    }
+    delay(1000);
+    setState(MODE_SELECTION);
+    currentMenuSelection = (int)currentMode;
+    menuScrollOffset = 0;
+    StickCP2.Lcd.fillScreen(BLACK);
 }
 
 // --- Main Loop ---
@@ -262,8 +246,6 @@ void loop() {
     }
 
     if (enableAutoSleep &&
-        currentState != BOOT_SCREEN &&
-        currentState != BOOT_JPG_SEQUENCE &&
         currentState != BLUETOOTH_SCANNING &&
         currentState != OTA_UPDATE &&
         !a2dp_source.is_connected() ) {
@@ -326,9 +308,8 @@ void loop() {
                      currentState != OTA_UPDATE &&
                      currentState != BLUETOOTH_SCANNING &&
                      currentState != DEVICE_STATUS && currentState != LIST_FILES && 
-                     currentState != EDIT_SETTING && currentState != CALIBRATE_THRESHOLD && 
-                     currentState != CALIBRATE_RECOIL &&
-                     currentState != BOOT_JPG_SEQUENCE) 
+                     currentState != EDIT_SETTING && currentState != CALIBRATE_THRESHOLD &&
+                     currentState != CALIBRATE_RECOIL)
             {
                 setState(SETTINGS_MENU_MAIN);
                 StickCP2.Lcd.fillScreen(BLACK);
@@ -343,47 +324,6 @@ void loop() {
     }
 
     switch (currentState) {
-        case BOOT_SCREEN: break; 
-
-        case BOOT_JPG_SEQUENCE:
-            {
-                if (currentState != BOOT_JPG_SEQUENCE) break; 
-                if (StickCP2.BtnA.wasClicked()) {
-                    resetActivityTimer();
-                    setState(MODE_SELECTION);
-                    currentMenuSelection = (int)currentMode;
-                    menuScrollOffset = 0;
-                    StickCP2.Lcd.fillScreen(BLACK);
-                    break;
-                }
-                if (currentTime - lastFrameTime >= BOOT_JPG_FRAME_DELAY_MS) {
-                    resetActivityTimer();
-                    char jpgFilename[12];
-                    sprintf(jpgFilename, "/%d.jpg", currentJpgFrame);
-                    if (LittleFS.exists(jpgFilename) && currentJpgFrame <= MAX_BOOT_JPG_FRAMES) {
-                        File jpgFile = LittleFS.open(jpgFilename, FILE_READ);
-                        if (!jpgFile) {
-                            setState(MODE_SELECTION); break;
-                        }
-                        bool success = StickCP2.Lcd.drawJpg(&jpgFile, 0, 0, StickCP2.Lcd.width(), StickCP2.Lcd.height(), 0, 0, 0.0f, 0.0f, datum_t::middle_center);
-                        jpgFile.close();
-                        if (!success) {
-                            setState(MODE_SELECTION); break;
-                        }
-                        currentJpgFrame++;
-                        lastFrameTime = currentTime;
-                    } else { 
-                        setState(MODE_SELECTION);
-                    }
-                }
-                 if (currentState == MODE_SELECTION) { 
-                    currentMenuSelection = (int)currentMode;
-                    menuScrollOffset = 0;
-                    StickCP2.Lcd.fillScreen(BLACK); 
-                 }
-            }
-            break;
-
         case MODE_SELECTION:          handleModeSelectionInput(); break;
         case LIVE_FIRE_READY:         handleLiveFireReady(); break;
         case LIVE_FIRE_GET_READY:     handleLiveFireGetReady(); break;

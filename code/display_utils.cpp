@@ -117,7 +117,6 @@ void displayMenu(const char* title, const char* items[], int count, int selectio
             else if (strcmp(items[i], "Par Beep Count") == 0) itemText += dryFireParBeepCount;
             else if (strcmp(items[i], "Recoil Threshold") == 0) itemText += String(recoilThreshold, 1);
             else if (strcmp(items[i], "Screen Rotation") == 0) itemText += screenRotationSetting;
-            else if (strcmp(items[i], "Boot Animation") == 0) itemText += (playBootAnimation ? "On" : "Off");
             else if (strcmp(items[i], "Auto Sleep") == 0) itemText += (enableAutoSleep ? "On" : "Off");
 
             else if (strcmp(items[i], "Min 1st Shot") == 0) { itemText += minFirstShotTimeMs; itemText += "ms"; }
@@ -348,7 +347,7 @@ void displayEditScreen() {
         StickCP2.Lcd.setTextDatum(BC_DATUM);
         StickCP2.Lcd.setTextFont(0);
         StickCP2.Lcd.setTextSize(1);
-        if (settingBeingEdited == EDIT_BOOT_ANIM || settingBeingEdited == EDIT_AUTO_SLEEP || settingBeingEdited == EDIT_BT_AUTO_RECONNECT) {
+        if (settingBeingEdited == EDIT_AUTO_SLEEP || settingBeingEdited == EDIT_BT_AUTO_RECONNECT) {
             StickCP2.Lcd.drawString(getUpButtonLabel() + " or " + getDownButtonLabel() + " = Toggle", StickCP2.Lcd.width() / 2, StickCP2.Lcd.height() - 25);
         } else {
             StickCP2.Lcd.drawString(getUpButtonLabel() + "=Up / " + getDownButtonLabel() + "=Down", StickCP2.Lcd.width() / 2, StickCP2.Lcd.height() - 25);
@@ -400,7 +399,6 @@ void displayEditScreen() {
              StickCP2.Lcd.setTextFont(7); StickCP2.Lcd.setTextSize(1);
              StickCP2.Lcd.drawFloat(editingFloatValue, 1, StickCP2.Lcd.width() / 2, StickCP2.Lcd.height() / 2);
              break;
-        case EDIT_BOOT_ANIM:
         case EDIT_AUTO_SLEEP:
         case EDIT_BT_AUTO_RECONNECT:
              StickCP2.Lcd.setTextFont(4); StickCP2.Lcd.setTextSize(1);
@@ -472,9 +470,9 @@ void displayDeviceStatusScreen() {
     y_pos += line_h + 5;
 
     StickCP2.Lcd.setCursor(10, y_pos);
-    if (filesystem_ok_for_boot) { 
-        size_t totalBytes = LittleFS.totalBytes();
-        size_t usedBytes = LittleFS.usedBytes();
+    size_t totalBytes = LittleFS.totalBytes();
+    size_t usedBytes = LittleFS.usedBytes();
+    if (totalBytes > 0) {
         StickCP2.Lcd.printf("LittleFS: %u/%u B used", usedBytes, totalBytes);
     } else {
         StickCP2.Lcd.print("LittleFS: Not Mounted!");

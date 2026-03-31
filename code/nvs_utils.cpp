@@ -25,7 +25,6 @@ void loadSettings() {
     recoilThreshold = preferences.getFloat(KEY_NR_RECOIL, 1.5f);
     screenRotationSetting = preferences.getInt(KEY_ROTATION, 3);
     if (screenRotationSetting < 0 || screenRotationSetting > 3) screenRotationSetting = 3;
-    playBootAnimation = preferences.getBool(KEY_BOOT_ANIM, false);
     enableAutoSleep = preferences.getBool(KEY_AUTO_SLEEP, true);
 
     minFirstShotTimeMs = preferences.getInt(KEY_MIN_FIRST_SHOT, DEFAULT_MIN_FIRST_SHOT_TIME_MS);
@@ -68,7 +67,6 @@ void saveSettings() {
     }
     preferences.putFloat(KEY_NR_RECOIL, recoilThreshold);
     preferences.putInt(KEY_ROTATION, screenRotationSetting);
-    preferences.putBool(KEY_BOOT_ANIM, playBootAnimation);
     preferences.putBool(KEY_AUTO_SLEEP, enableAutoSleep);
 
     preferences.putInt(KEY_MIN_FIRST_SHOT, minFirstShotTimeMs);

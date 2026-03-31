@@ -118,7 +118,6 @@ input[type="number"]:focus,select:focus{outline:none;border-color:#4CAF50}
 <summary>Device</summary>
 <div class="fields">
 <div class="field"><label>Screen Rotation</label><select id="screenRotation"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></div>
-<div class="field toggle"><label>Boot Animation</label><label class="switch"><input type="checkbox" id="bootAnimation"><span class="slider"></span></label></div>
 <div class="field toggle"><label>Auto Sleep</label><label class="switch"><input type="checkbox" id="autoSleep"><span class="slider"></span></label></div>
 </div>
 </details>
@@ -163,7 +162,6 @@ document.getElementById('btVolume').value=d.bluetooth.volume;
 document.getElementById('btAudioOffset').value=d.bluetooth.audioOffset;
 document.getElementById('btAutoReconnect').checked=d.bluetooth.autoReconnect;
 document.getElementById('screenRotation').value=d.device.screenRotation;
-document.getElementById('bootAnimation').checked=d.device.bootAnimation;
 document.getElementById('autoSleep').checked=d.device.autoSleep;
 }).catch(function(){toast('Failed to load settings',false)});
 document.getElementById('parBeepCount').addEventListener('change',function(){
@@ -178,7 +176,7 @@ dryFire:{parBeepCount:n,parTimes:parTimes},
 noisyRange:{recoilThreshold:parseFloat(document.getElementById('recoilThreshold').value)||1.5},
 beep:{beepDuration:parseInt(document.getElementById('beepDuration').value)||150,beepTone:parseInt(document.getElementById('beepTone').value)||2000,postBeepDelay:parseInt(document.getElementById('postBeepDelay').value)||200},
 bluetooth:{volume:parseInt(document.getElementById('btVolume').value)||80,audioOffset:parseInt(document.getElementById('btAudioOffset').value)||0,autoReconnect:document.getElementById('btAutoReconnect').checked},
-device:{screenRotation:parseInt(document.getElementById('screenRotation').value)||3,bootAnimation:document.getElementById('bootAnimation').checked,autoSleep:document.getElementById('autoSleep').checked}};
+device:{screenRotation:parseInt(document.getElementById('screenRotation').value)||3,autoSleep:document.getElementById('autoSleep').checked}};
 fetch('/api/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)}).then(function(r){return r.json()}).then(function(d){
 if(d.status==='ok'){toast('Settings saved!',true)}else{toast('Save failed: '+(d.message||'unknown error'),false)}}).catch(function(){toast('Save failed',false)})}
 </script>
@@ -263,7 +261,6 @@ static void handleGetSettings() {
 
     JsonObject dv = doc["device"].to<JsonObject>();
     dv["screenRotation"] = screenRotationSetting;
-    dv["bootAnimation"] = playBootAnimation;
     dv["autoSleep"] = enableAutoSleep;
 
     String output;
@@ -367,9 +364,6 @@ static void handlePostSettings() {
             screenRotationSetting = constrain((int)dv["screenRotation"], 0, 3);
             StickCP2.Lcd.setRotation(screenRotationSetting);
         }
-        if (dv["bootAnimation"].is<bool>()) {
-            playBootAnimation = dv["bootAnimation"];
-        }
         if (dv["autoSleep"].is<bool>()) {
             enableAutoSleep = dv["autoSleep"];
         }
@@ -455,7 +449,7 @@ void handleOtaUpdateLoop() {
         resetActivityTimer();
         settingsMenuLevel = 6;
         setState(SETTINGS_MENU_DEVICE);
-        currentMenuSelection = 5; // "WiFi Settings" index in deviceItems
+        currentMenuSelection = 4; // "WiFi Settings" index in deviceItems
         menuScrollOffset = 0;
         StickCP2.Lcd.fillScreen(BLACK);
         playUnsuccessBeeps();
