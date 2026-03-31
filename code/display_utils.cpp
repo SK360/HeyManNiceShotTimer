@@ -15,11 +15,11 @@ void displayBootScreen(const char* line1a, const char* line1b, const char* line2
 }
 
 String getUpButtonLabel() {
-    return (StickCP2.Lcd.getRotation() == 3) ? "Bottom" : "Top";
+    return (StickCP2.Lcd.getRotation() == 3) ? "Top" : "Bottom";
 }
 
 String getDownButtonLabel() {
-    return (StickCP2.Lcd.getRotation() == 3) ? "Top" : "Bottom";
+    return (StickCP2.Lcd.getRotation() == 3) ? "Bottom" : "Top";
 }
 
 void displayMenu(const char* title, const char* items[], int count, int selection, int scrollOffset) {
