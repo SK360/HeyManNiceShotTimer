@@ -33,6 +33,7 @@ jobs:
 
       - name: Install libraries
         run: |
+          arduino-cli lib install "M5StickCPlus2"
           arduino-cli lib install "M5GFX@0.2.7"
           arduino-cli lib install "M5Unified@0.2.5"
           arduino-cli lib install "ArduinoJson"
