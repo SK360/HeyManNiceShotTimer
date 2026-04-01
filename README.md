@@ -61,8 +61,8 @@ Combines microphone detection with IMU (accelerometer) recoil detection. A shot 
 - **Bluetooth A2DP** — stream start beeps and par tones to any Bluetooth speaker/headset
 - **BT audio offset calibration** — compensate for Bluetooth latency to keep buzzer and speaker in sync
 - **WiFi settings page** — configure all settings and upload new firmware from a phone browser
-- **Screen rotation** — four orientations supported
-- **Auto-sleep** — light sleep after 1 minute of inactivity (disabled when Bluetooth is connected)
+- **Left/right hand orientation** — flip the screen for left- or right-hand use; button mapping adjusts automatically
+- **Auto-sleep** — configurable light sleep timeout (Off, 1, 2, 5, or 10 minutes); disabled when Bluetooth is connected. Any button wakes the device.
 - **Device status screen** — battery voltage/%, IMU readings
 - **Dual-core FreeRTOS** — buzzer runs on Core 0 to avoid blocking display/logic on Core 1
 
@@ -71,38 +71,42 @@ Combines microphone detection with IMU (accelerometer) recoil detection. A shot 
 ## Settings Menu Structure
 
 ```
-SETTINGS
+SELECT MODE
 ├── Live Fire
-│   ├── Max Shots          (0 = unlimited, 1–99)
-│   ├── Shot Threshold     (mic sensitivity, RMS)
-│   ├── Min 1st Shot       (ms delay before 1st shot registers)
-│   ├── Start Delay Min    (ms, minimum random pre-beep delay)
-│   ├── Start Delay Max    (ms, maximum random pre-beep delay)
-│   └── Calibrate Thresh.
-├── Dry Fire
-│   ├── Par Beep Count     (1–10)
-│   └── Par Time 1–10      (0.1–10.0 seconds each)
+├── Dry Fire Par
 ├── Noisy Range
-│   ├── Recoil Threshold   (G-force, 0.5–5.0)
-│   └── Calibrate Recoil
-├── Beep Settings
-│   ├── Beep Duration      (ms)
-│   ├── Beep Tone          (Hz)
-│   ├── Post Beep Delay    (ms)
-│   └── Tone Sweep
-├── Bluetooth
-│   ├── Connect / Disconnect
-│   ├── Volume             (0–127)
-│   ├── BT Audio Offset    (ms, -1000 to +500)
-│   ├── Auto Reconnect
-│   └── Scan for Devices
-├── Device
-│   ├── Orientation        (Right/Left hand)
-│   ├── Auto Sleep         (On/Off)
-│   ├── Device Status
-│   └── WiFi Settings      (opens WiFi AP for browser config / OTA)
-├── Power Off Now
-└── Save & Exit
+└── Settings
+    ├── Live Fire
+    │   ├── Max Shots          (0 = unlimited, 1–99)
+    │   ├── Shot Threshold     (mic sensitivity, RMS)
+    │   ├── Min 1st Shot       (ms delay before 1st shot registers)
+    │   ├── Start Delay Min    (ms, minimum random pre-beep delay)
+    │   ├── Start Delay Max    (ms, maximum random pre-beep delay)
+    │   └── Calibrate Thresh.
+    ├── Dry Fire
+    │   ├── Par Beep Count     (1–10)
+    │   └── Par Time 1–10      (0.1–10.0 seconds each)
+    ├── Noisy Range
+    │   ├── Recoil Threshold   (G-force, 0.5–5.0)
+    │   └── Calibrate Recoil
+    ├── Beep Settings
+    │   ├── Beep Duration      (ms)
+    │   ├── Beep Tone          (Hz)
+    │   ├── Post Beep Delay    (ms)
+    │   └── Tone Sweep
+    ├── Bluetooth
+    │   ├── Connect / Disconnect
+    │   ├── Volume             (0–127)
+    │   ├── BT Audio Offset    (ms, -1000 to +500)
+    │   ├── Auto Reconnect
+    │   └── Scan for Devices
+    ├── Device
+    │   ├── Orientation        (Right/Left hand)
+    │   ├── Auto Sleep         (Off / 1 / 2 / 5 / 10 min)
+    │   ├── Device Status
+    │   └── WiFi Settings      (opens WiFi AP for browser config / OTA)
+    ├── Power Off Now
+    └── Save & Exit
 ```
 
 ---
@@ -133,12 +137,15 @@ Install these **exact versions** — other versions may not be compatible:
 |---------|---------|--------|
 | `m5stack:esp32` board | `2.1.4` | Arduino Board Manager |
 | `esp32:esp32` board | `3.3.2` | Arduino Board Manager |
+| `M5StickCPlus2` | latest | Arduino Library Manager |
 | `M5GFX` | `0.2.7` | Arduino Library Manager |
 | `M5Unified` | `0.2.5` | Arduino Library Manager |
-| `ESP32-A2DP` | `1.8.7` | Arduino Library Manager |
+| `ArduinoJson` | latest | Arduino Library Manager |
+| `ESP32-A2DP` | `1.8.7` | [GitHub](https://github.com/pschatzmann/ESP32-A2DP) — install manually |
 | `ESP32-BT-Scanner` | latest | [GitHub](https://github.com/jcarletto27/ESP32-BT-Scanner) — install manually |
+| `M5MicPeakRMS` | latest | [GitHub](https://github.com/jcarletto27/M5MicPeakRMS) — install manually |
 
-> **ESP32-BT-Scanner** is not in the Library Manager. Download the ZIP from the link above and install via **Sketch → Include Library → Add .ZIP Library**.
+> **ESP32-A2DP**, **ESP32-BT-Scanner**, and **M5MicPeakRMS** are not in the Arduino Library Manager. Download the ZIPs from the links above and install via **Sketch → Include Library → Add .ZIP Library**.
 
 ### Arduino IDE
 
@@ -155,19 +162,23 @@ Install these **exact versions** — other versions may not be compatible:
    - Search `esp32` → install **esp32 by Espressif Systems** version `3.3.2`
 
 4. **Install libraries** via *Tools → Manage Libraries*:
+   - `M5StickCPlus2` (latest)
    - `M5GFX` version `0.2.7`
    - `M5Unified` version `0.2.5`
-   - `ESP32-A2DP` version `1.8.7`
+   - `ArduinoJson` (latest)
 
-5. **Install ESP32-BT-Scanner manually** — download the ZIP from [GitHub](https://github.com/jcarletto27/ESP32-BT-Scanner) and install via *Sketch → Include Library → Add .ZIP Library*
+   **Install manually** (download ZIP from GitHub, install via *Sketch → Include Library → Add .ZIP Library*):
+   - `ESP32-A2DP` version `1.8.7` — [GitHub](https://github.com/pschatzmann/ESP32-A2DP)
+   - `ESP32-BT-Scanner` — [GitHub](https://github.com/jcarletto27/ESP32-BT-Scanner)
+   - `M5MicPeakRMS` — [GitHub](https://github.com/jcarletto27/M5MicPeakRMS)
 
-6. **Select the board** — *Tools → Board → M5Stack → M5StickC-Plus2*
+5. **Select the board** — *Tools → Board → M5Stack → M5StickC-Plus2*
 
-7. **Select your port** — *Tools → Port* → choose the COM port for your device
+6. **Select your port** — *Tools → Port* → choose the COM port for your device
 
-8. **Open the sketch** — open `code/code.ino`
+7. **Open the sketch** — open `code/code.ino`
 
-9. **Upload** — click the Upload button (or *Sketch → Upload*)
+8. **Upload** — click the Upload button (or *Sketch → Upload*)
 
 ### arduino-cli / Makefile
 
@@ -180,13 +191,13 @@ Run these from inside the `code/` directory:
 | Target | Description |
 |--------|-------------|
 | `make` or `make build` | Compile only |
-| `make flash` | Compile and upload firmware |
-| `make merge` | Create a single merged `.bin` (bootloader + partitions + firmware + FS) |
+| `make flash` | Upload firmware to device |
+| `make merge` | Create a single merged `.bin` (bootloader + partitions + firmware) |
 | `make release` | Clean build + merged binary for distribution |
 | `make monitor` | Open serial monitor at 115200 baud |
 | `make clean` | Remove build artifacts |
 
-> Edit the `PORT` variable at the top of the Makefile to match your device's serial port (e.g. `/dev/cu.usbserial-XXXX` on macOS, `COM6` on Windows).
+> Edit the `DEVICE` variable at the top of the Makefile to match your device's serial port (e.g. `/dev/cu.usbserial-XXXX` on macOS, `COM6` on Windows).
 
 ### Project Structure
 
@@ -214,9 +225,11 @@ code/
 | Button | Action |
 |--------|--------|
 | **BtnA (front)** — short press | Select / Confirm / Start |
-| **BtnA (front)** — long press | Back / Cancel |
-| **BtnB (side)** | Scroll down / Adjust value down |
-| **BtnPWR (top)** | Scroll up / Adjust value up |
+| **BtnA (front)** — long press | Back / Cancel / Return to mode select |
+| **BtnB (side)** | Scroll / Adjust (direction depends on orientation) |
+| **BtnPWR (top)** | Scroll / Adjust (direction depends on orientation) |
+
+> Button directions (up/down) swap automatically when you switch between Right Hand and Left Hand orientation.
 
 ---
 
