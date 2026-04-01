@@ -39,11 +39,10 @@ jobs:
 
       - name: Install custom libraries
         run: |
-          LIBS=$(arduino-cli config dump --format json | \
-            python3 -c "import sys,json; print(json.load(sys.stdin)['directories']['user'])")/libraries
+          LIBS="$HOME/Arduino/libraries"
           mkdir -p "$LIBS"
           git clone --branch v1.8.7 --depth 1 \
-            https://github.com/pschatzmann/ESP32-A2DP  "$LIBS/ESP32-A2DP"
+            https://github.com/pschatzmann/ESP32-A2DP    "$LIBS/ESP32-A2DP"
           git clone --depth 1 \
             https://github.com/jcarletto27/ESP32-BT-Scanner "$LIBS/ESP32BluetoothScanner"
           git clone --depth 1 \
