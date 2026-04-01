@@ -290,22 +290,6 @@ void loop() {
                 menuScrollOffset = 0;
                 StickCP2.Lcd.fillScreen(BLACK);
             }
-            else if (currentState != SETTINGS_MENU_MAIN && currentState != SETTINGS_MENU_GENERAL &&
-                     currentState != SETTINGS_MENU_BEEP && currentState != SETTINGS_MENU_BLUETOOTH &&
-                     currentState != SETTINGS_MENU_DRYFIRE && currentState != SETTINGS_MENU_NOISY &&
-                     currentState != SETTINGS_MENU_DEVICE &&
-                     currentState != OTA_UPDATE &&
-                     currentState != BLUETOOTH_SCANNING &&
-                     currentState != DEVICE_STATUS &&
-                     currentState != EDIT_SETTING && currentState != CALIBRATE_THRESHOLD &&
-                     currentState != CALIBRATE_RECOIL)
-            {
-                setState(SETTINGS_MENU_MAIN);
-                StickCP2.Lcd.fillScreen(BLACK);
-                settingsMenuLevel = 0;
-                currentMenuSelection = 0;
-                menuScrollOffset = 0;
-            }
         }
     } else {
         btnTopPressTime = 0; 

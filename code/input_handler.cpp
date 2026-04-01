@@ -10,7 +10,7 @@
 
 
 void handleModeSelectionInput() {
-    const char* modeItems[] = {"Live Fire", "Dry Fire Par", "Noisy Range"};
+    const char* modeItems[] = {"Live Fire", "Dry Fire Par", "Noisy Range", "Settings"};
     int modeCount = sizeof(modeItems) / sizeof(modeItems[0]);
     int rotation = StickCP2.Lcd.getRotation();
     int itemsPerScreen = MENU_ITEMS_PER_SCREEN_LANDSCAPE;
@@ -40,14 +40,23 @@ void handleModeSelectionInput() {
 
     if (StickCP2.BtnA.wasClicked()) {
         resetActivityTimer();
-        currentMode = (OperatingMode)currentMenuSelection;
-        switch (currentMode) {
-            case MODE_LIVE_FIRE:   setState(LIVE_FIRE_READY); break;
-            case MODE_DRY_FIRE:    setState(DRY_FIRE_READY); break;
-            case MODE_NOISY_RANGE: setState(NOISY_RANGE_READY); break;
+        if (currentMenuSelection == 3) {
+            // Settings
+            setState(SETTINGS_MENU_MAIN);
+            StickCP2.Lcd.fillScreen(BLACK);
+            settingsMenuLevel = 0;
+            currentMenuSelection = 0;
+            menuScrollOffset = 0;
+        } else {
+            currentMode = (OperatingMode)currentMenuSelection;
+            switch (currentMode) {
+                case MODE_LIVE_FIRE:   setState(LIVE_FIRE_READY); break;
+                case MODE_DRY_FIRE:    setState(DRY_FIRE_READY); break;
+                case MODE_NOISY_RANGE: setState(NOISY_RANGE_READY); break;
+            }
+            StickCP2.Lcd.fillScreen(BLACK);
+            menuScrollOffset = 0;
         }
-        StickCP2.Lcd.fillScreen(BLACK);
-        menuScrollOffset = 0;
     }
 }
 
