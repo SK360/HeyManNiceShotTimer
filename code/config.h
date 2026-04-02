@@ -56,7 +56,8 @@ extern const char* KEY_AUTO_SLEEP;
 extern const char* KEY_BT_DEVICE_NAME;
 extern const char* KEY_BT_AUTO_RECONNECT;
 extern const char* KEY_BT_VOLUME;
-extern const char* KEY_BT_AUDIO_OFFSET; 
+extern const char* KEY_BT_AUDIO_OFFSET;
+extern const char* KEY_UI_SOUNDS;
 
 extern const char* KEY_MIN_FIRST_SHOT;
 extern const char* KEY_POST_BEEP_DELAY;
@@ -116,6 +117,7 @@ enum EditableSetting {
     EDIT_MIN_FIRST_SHOT,
     EDIT_POST_BEEP_DELAY,
     EDIT_TONE_SWEEP,
+    EDIT_UI_SOUNDS,
     EDIT_START_DELAY_MIN,
     EDIT_START_DELAY_MAX
 };

@@ -46,6 +46,7 @@ float dryFireParTimesSec[MAX_PAR_BEEPS];
 float recoilThreshold = 1.5f;
 int screenRotationSetting = 3;
 int autoSleepMinutes = 1;
+bool enableUISounds = true;
 
 int minFirstShotTimeMs = 100;
 int postBeepDelayMs = 200;

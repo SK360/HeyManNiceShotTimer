@@ -68,6 +68,7 @@ void playTone(int freq, int duration) {
 // Plays a tone for immediate UI feedback, IGNORING the global Bluetooth audio offset.
 // Plays ONLY on BT if connected, otherwise ONLY on buzzer.
 void playFeedbackTone(int freq, int duration) {
+    if (!enableUISounds) return;
     unsigned long now = millis();
     if (a2dp_source.is_connected()) {
         // --- Bluetooth Path Only ---
@@ -110,6 +111,7 @@ void playSyncCalibrationTone(int freq, int duration, int offsetMs) {
 
 
 void playSuccessBeeps() {
+    if (!enableUISounds) return;
     int octave = 6; 
     int freqs[] = {1047, 1175, 1319, 1397, 1568}; 
 
@@ -120,6 +122,7 @@ void playSuccessBeeps() {
 }
 
 void playUnsuccessBeeps() {
+    if (!enableUISounds) return;
     int freq_val = 262; 
     int repeatTone = 2;
     unsigned long toneDuration = (unsigned long)(BEEP_NOTE_DURATION_MS * 1.5f);

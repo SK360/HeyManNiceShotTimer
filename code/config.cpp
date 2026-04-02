@@ -14,7 +14,8 @@ const char* KEY_AUTO_SLEEP = "autoSleep";
 const char* KEY_BT_DEVICE_NAME = "btDevName";
 const char* KEY_BT_AUTO_RECONNECT = "btAutoRec";
 const char* KEY_BT_VOLUME = "btVolume";
-const char* KEY_BT_AUDIO_OFFSET = "btAudioOffset"; // New NVS Key Definition
+const char* KEY_BT_AUDIO_OFFSET = "btAudioOffset";
+const char* KEY_UI_SOUNDS = "uiSounds";
 
 const char* KEY_MIN_FIRST_SHOT = "minFirstShot";
 const char* KEY_POST_BEEP_DELAY = "postBeepDly";

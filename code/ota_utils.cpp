@@ -103,6 +103,7 @@ input[type="number"]:focus,select:focus{outline:none;border-color:#4CAF50}
 <div class="field"><label>Beep Duration (ms)</label><input type="number" id="beepDuration" min="50" max="2000" step="50"></div>
 <div class="field"><label>Beep Tone (Hz)</label><input type="number" id="beepTone" min="500" max="8000" step="100"></div>
 <div class="field"><label>Post Beep Delay (ms)</label><input type="number" id="postBeepDelay" min="50" max="1000" step="25"></div>
+<div class="field toggle"><label>UI Sounds</label><label class="switch"><input type="checkbox" id="uiSounds"><span class="slider"></span></label></div>
 </div>
 </details>
 
@@ -159,6 +160,7 @@ document.getElementById('recoilThreshold').value=d.noisyRange.recoilThreshold.to
 document.getElementById('beepDuration').value=d.beep.beepDuration;
 document.getElementById('beepTone').value=d.beep.beepTone;
 document.getElementById('postBeepDelay').value=d.beep.postBeepDelay;
+document.getElementById('uiSounds').checked=d.beep.uiSounds;
 document.getElementById('btVolume').value=d.bluetooth.volume;
 document.getElementById('btAudioOffset').value=d.bluetooth.audioOffset;
 document.getElementById('btAutoReconnect').checked=d.bluetooth.autoReconnect;
@@ -175,7 +177,7 @@ for(var i=0;i<10;i++){var el=document.getElementById('parTime'+i);parTimes.push(
 var data={liveFire:{maxShots:parseInt(document.getElementById('maxShots').value)||0,shotThreshold:parseInt(document.getElementById('shotThreshold').value)||15311,minFirstShot:parseInt(document.getElementById('minFirstShot').value)||0,startDelayMin:parseInt(document.getElementById('startDelayMin').value)||0,startDelayMax:parseInt(document.getElementById('startDelayMax').value)||0},
 dryFire:{parBeepCount:n,parTimes:parTimes},
 noisyRange:{recoilThreshold:parseFloat(document.getElementById('recoilThreshold').value)||1.5},
-beep:{beepDuration:parseInt(document.getElementById('beepDuration').value)||150,beepTone:parseInt(document.getElementById('beepTone').value)||2000,postBeepDelay:parseInt(document.getElementById('postBeepDelay').value)||200},
+beep:{beepDuration:parseInt(document.getElementById('beepDuration').value)||150,beepTone:parseInt(document.getElementById('beepTone').value)||2000,postBeepDelay:parseInt(document.getElementById('postBeepDelay').value)||200,uiSounds:document.getElementById('uiSounds').checked},
 bluetooth:{volume:parseInt(document.getElementById('btVolume').value)||80,audioOffset:parseInt(document.getElementById('btAudioOffset').value)||0,autoReconnect:document.getElementById('btAutoReconnect').checked},
 device:{screenRotation:parseInt(document.getElementById('screenRotation').value)||3,autoSleep:parseInt(document.getElementById('autoSleep').value)||0}};
 fetch('/api/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)}).then(function(r){return r.json()}).then(function(d){
@@ -256,6 +258,7 @@ static void handleGetSettings() {
     bp["beepDuration"] = (int)currentBeepDuration;
     bp["beepTone"] = currentBeepToneHz;
     bp["postBeepDelay"] = postBeepDelayMs;
+    bp["uiSounds"] = enableUISounds;
 
     JsonObject bt = doc["bluetooth"].to<JsonObject>();
     bt["volume"] = currentBluetoothVolume;
@@ -341,6 +344,9 @@ static void handlePostSettings() {
         }
         if (bp["postBeepDelay"].is<int>()) {
             postBeepDelayMs = constrain((int)bp["postBeepDelay"], 50, 1000);
+        }
+        if (bp["uiSounds"].is<bool>()) {
+            enableUISounds = bp["uiSounds"];
         }
     }
 

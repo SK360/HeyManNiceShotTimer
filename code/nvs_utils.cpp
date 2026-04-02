@@ -32,6 +32,7 @@ void loadSettings() {
         if (autoSleepMinutes == AUTO_SLEEP_OPTIONS[i]) { validSleep = true; break; }
     }
     if (!validSleep) autoSleepMinutes = 1;
+    enableUISounds = preferences.getBool(KEY_UI_SOUNDS, true);
 
     minFirstShotTimeMs = preferences.getInt(KEY_MIN_FIRST_SHOT, DEFAULT_MIN_FIRST_SHOT_TIME_MS);
     if (minFirstShotTimeMs < 0) minFirstShotTimeMs = 0;
@@ -74,6 +75,7 @@ void saveSettings() {
     preferences.putFloat(KEY_NR_RECOIL, recoilThreshold);
     preferences.putInt(KEY_ROTATION, screenRotationSetting);
     preferences.putInt(KEY_AUTO_SLEEP, autoSleepMinutes);
+    preferences.putBool(KEY_UI_SOUNDS, enableUISounds);
 
     preferences.putInt(KEY_MIN_FIRST_SHOT, minFirstShotTimeMs);
     preferences.putInt(KEY_POST_BEEP_DELAY, postBeepDelayMs);

@@ -108,6 +108,7 @@ void displayMenu(const char* title, const char* items[], int count, int selectio
                 else { itemText += autoSleepMinutes; itemText += " min"; }
             }
 
+            else if (strcmp(items[i], "UI Sounds") == 0) itemText += (enableUISounds ? "On" : "Off");
             else if (strcmp(items[i], "Min 1st Shot") == 0) { itemText += minFirstShotTimeMs; itemText += "ms"; }
             else if (strcmp(items[i], "Post Beep Delay") == 0) { itemText += postBeepDelayMs; itemText += "ms"; }
             else if (strcmp(items[i], "Start Delay Min") == 0) { itemText += startDelayMinMs; itemText += "ms"; }
@@ -334,7 +335,7 @@ void displayEditScreen() {
         StickCP2.Lcd.setTextDatum(BC_DATUM);
         StickCP2.Lcd.setTextFont(0);
         StickCP2.Lcd.setTextSize(1);
-        if (settingBeingEdited == EDIT_ROTATION || settingBeingEdited == EDIT_BT_AUTO_RECONNECT) {
+        if (settingBeingEdited == EDIT_ROTATION || settingBeingEdited == EDIT_BT_AUTO_RECONNECT || settingBeingEdited == EDIT_UI_SOUNDS) {
             StickCP2.Lcd.drawString(getUpButtonLabel() + " or " + getDownButtonLabel() + " = Toggle", StickCP2.Lcd.width() / 2, StickCP2.Lcd.height() - 25);
         } else {
             StickCP2.Lcd.drawString(getUpButtonLabel() + "=Up / " + getDownButtonLabel() + "=Down", StickCP2.Lcd.width() / 2, StickCP2.Lcd.height() - 25);
@@ -398,6 +399,7 @@ void displayEditScreen() {
              }
              break;
         case EDIT_BT_AUTO_RECONNECT:
+        case EDIT_UI_SOUNDS:
              StickCP2.Lcd.setTextFont(4); StickCP2.Lcd.setTextSize(1);
              StickCP2.Lcd.drawString(editingBoolValue ? "On" : "Off", StickCP2.Lcd.width() / 2, StickCP2.Lcd.height() / 2);
              break;

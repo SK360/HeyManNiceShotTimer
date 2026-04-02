@@ -70,7 +70,7 @@ void handleSettingsInput() {
 
     static const char* mainItems[] = {"Live Fire", "Dry Fire", "Noisy Range", "Beep Settings", "Bluetooth", "Device", "Power Off Now", "Exit"};
     static const char* liveFireItems[] = {"Max Shots", "Shot Threshold", "Min 1st Shot", "Start Delay Min", "Start Delay Max", "Calibrate Thresh.", "Back"};
-    static const char* beepItems[] = {"Beep Duration", "Beep Tone", "Post Beep Delay", "Tone Sweep", "Back"};
+    static const char* beepItems[] = {"Beep Duration", "Beep Tone", "Post Beep Delay", "UI Sounds", "Tone Sweep", "Back"};
     static const char* noisyItems[] = {"Recoil Threshold", "Calibrate Recoil", "Back"};
     static const char* deviceItems[] = {"Orientation", "Auto Sleep", "Device Status", "WiFi Settings", "Back"};
 
@@ -265,6 +265,8 @@ void handleSettingsInput() {
                 settingBeingEdited = EDIT_BEEP_TONE; editingIntValue = currentBeepToneHz; setState(EDIT_SETTING); needsActionRedraw = false; StickCP2.Lcd.fillScreen(BLACK);
             } else if (strcmp(editingSettingName, "Post Beep Delay") == 0) {
                 settingBeingEdited = EDIT_POST_BEEP_DELAY; editingIntValue = postBeepDelayMs; setState(EDIT_SETTING); needsActionRedraw = false; StickCP2.Lcd.fillScreen(BLACK);
+            } else if (strcmp(editingSettingName, "UI Sounds") == 0) {
+                settingBeingEdited = EDIT_UI_SOUNDS; editingBoolValue = enableUISounds; setState(EDIT_SETTING); needsActionRedraw = false; StickCP2.Lcd.fillScreen(BLACK);
             } else if (strcmp(editingSettingName, "Tone Sweep") == 0) {
                 settingBeingEdited = EDIT_TONE_SWEEP; editingIntValue = 2000; setState(EDIT_SETTING); needsActionRedraw = false; StickCP2.Lcd.fillScreen(BLACK);
             } else if (strcmp(editingSettingName, "Back") == 0) {
@@ -408,6 +410,7 @@ void handleEditSettingInput() {
                 break;
             }
             case EDIT_BT_AUTO_RECONNECT: editingBoolValue = !editingBoolValue; break;
+            case EDIT_UI_SOUNDS: editingBoolValue = !editingBoolValue; break;
             case EDIT_BT_VOLUME:
                 editingIntValue = min(max(editingIntValue + (increment * 5), 0), 127);
                 break;
@@ -437,6 +440,7 @@ void handleEditSettingInput() {
         }
         if (valueChanged &&
             settingBeingEdited != EDIT_BT_AUTO_RECONNECT &&
+            settingBeingEdited != EDIT_UI_SOUNDS &&
             settingBeingEdited != EDIT_BT_AUDIO_OFFSET &&
             settingBeingEdited != EDIT_TONE_SWEEP) { 
             playFeedbackTone(2500, 20); 
@@ -472,6 +476,7 @@ void handleEditSettingInput() {
             case EDIT_RECOIL_THRESHOLD: recoilThreshold = editingFloatValue; break;
             case EDIT_ROTATION: screenRotationSetting = editingIntValue; break;
             case EDIT_AUTO_SLEEP: autoSleepMinutes = editingIntValue; break;
+            case EDIT_UI_SOUNDS: enableUISounds = editingBoolValue; break;
             case EDIT_BT_AUTO_RECONNECT:
                 currentBluetoothAutoReconnect = editingBoolValue;
                 break;

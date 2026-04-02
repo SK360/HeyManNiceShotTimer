@@ -32,6 +32,7 @@ extern float dryFireParTimesSec[MAX_PAR_BEEPS];
 extern float recoilThreshold;
 extern int screenRotationSetting;
 extern int autoSleepMinutes;
+extern bool enableUISounds;
 
 extern int minFirstShotTimeMs;
 extern int postBeepDelayMs;
