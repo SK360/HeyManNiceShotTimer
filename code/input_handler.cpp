@@ -424,7 +424,7 @@ void handleEditSettingInput() {
                 break;
             case EDIT_TONE_SWEEP:
                 editingIntValue = min(max(editingIntValue + (increment * 50), 2000), 4000);
-                playFeedbackTone(editingIntValue, 100);
+                playTone(editingIntValue, 100);
                 break;
             case EDIT_START_DELAY_MIN:
                 editingIntValue = min(max(editingIntValue + (increment * 250), 0), min(startDelayMaxMs, MAX_START_DELAY_MS));
