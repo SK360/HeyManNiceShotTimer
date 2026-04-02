@@ -122,9 +122,6 @@ extern unsigned long lastSoundPeakTime;
 extern bool checkingForRecoil;
 extern float peakRecoilValue;
 
-// AVRC Metadata
-extern const char *avrc_metadata[];
-
 // --- FreeRTOS Handles ---
 extern QueueHandle_t buzzerQueue; 
 extern TaskHandle_t buzzerTaskHandle; 

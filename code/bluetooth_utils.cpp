@@ -8,15 +8,6 @@
 #include <math.h>
 #include <vector> // Ensure vector is included
 
-// **** Ensure this line is COMMENTED OUT for normal beep testing ****
-// #define DEBUG_A2DP_AUDIO_PATH 
-// *******************************************************************
-
-const char *avrc_metadata[] = {
-    "title", "ShotTimer Audio", "artist", "M5StickC+", "album", "Timer Sounds",
-    "track_num", "1", "num_tracks", "1", "genre", "Utility", NULL
-};
-
 // Helper function to convert BD address to String
 String bdAddrToString(const esp_bd_addr_t address) {
     char buf[18];

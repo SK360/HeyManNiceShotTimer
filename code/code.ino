@@ -54,7 +54,7 @@ int startDelayMinMs = 2000;
 int startDelayMaxMs = 5000;
 
 BluetoothA2DPSource a2dp_source;
-String currentBluetoothDeviceName = "LEXON MINO L";
+String currentBluetoothDeviceName = "";
 bool currentBluetoothAutoReconnect = false;
 int currentBluetoothVolume = 80;
 int currentBluetoothAudioOffsetMs = 0; 
@@ -155,14 +155,12 @@ void setup() {
 
     if (!micPeakRMS.begin(StickCP2)) {
         displayBootScreen("ERROR", "", "Mic Init Failed!");
-        // playUnsuccessBeeps(); // Buzzer task not running yet
-        while(true); 
+        while(true);
     }
     micPeakRMS.resetPeak();
 
     if (!StickCP2.Imu.begin()) {
         displayBootScreen("WARNING", "", "IMU Init Failed!");
-        // playUnsuccessBeeps(); 
         delay(2000);
     }
 
@@ -196,7 +194,6 @@ void setup() {
     a2dp_source.set_volume(currentBluetoothVolume);
     a2dp_source.set_on_connection_state_changed(a2dp_connection_state_changed_callback);
     a2dp_source.set_ssid_callback(a2dp_ssid_callback); 
-    // a2dp_source.set_avrc_metadata(avrc_metadata);
 
     if (currentBluetoothAutoReconnect && !currentBluetoothDeviceName.isEmpty()) {
         a2dp_source.start((char*)currentBluetoothDeviceName.c_str()); 

@@ -49,7 +49,7 @@ void loadSettings() {
     if (startDelayMaxMs > MAX_START_DELAY_MS) startDelayMaxMs = MAX_START_DELAY_MS;
     if (startDelayMaxMs < startDelayMinMs) startDelayMaxMs = startDelayMinMs;
 
-    currentBluetoothDeviceName = preferences.getString(KEY_BT_DEVICE_NAME, "LEXON MINO L");
+    currentBluetoothDeviceName = preferences.getString(KEY_BT_DEVICE_NAME, "");
     currentBluetoothAutoReconnect = preferences.getBool(KEY_BT_AUTO_RECONNECT, false);
     currentBluetoothVolume = preferences.getInt(KEY_BT_VOLUME, 80);
     currentBluetoothAudioOffsetMs = preferences.getInt(KEY_BT_AUDIO_OFFSET, 0);

@@ -191,9 +191,26 @@ void handleSettingsInput() {
             else if (strcmp(items[currentMenuSelection], "Power Off Now") == 0) {
                 StickCP2.Lcd.fillScreen(BLACK);
                 StickCP2.Lcd.setTextDatum(MC_DATUM);
-                StickCP2.Lcd.drawString("Powering Off...", StickCP2.Lcd.width()/2, StickCP2.Lcd.height()/2);
-                delay(1500);
-                StickCP2.Power.powerOff();
+                StickCP2.Lcd.setTextFont(0);
+                StickCP2.Lcd.setTextSize(2);
+                StickCP2.Lcd.drawString("Power Off?", StickCP2.Lcd.width()/2, StickCP2.Lcd.height()/2 - 15);
+                StickCP2.Lcd.setTextSize(1);
+                StickCP2.Lcd.drawString("Press=Cancel / Hold=Off", StickCP2.Lcd.width()/2, StickCP2.Lcd.height()/2 + 15);
+                while (true) {
+                    StickCP2.update();
+                    if (StickCP2.BtnA.wasClicked()) {
+                        playUnsuccessBeeps();
+                        redrawMenu = true;
+                        break;
+                    }
+                    if (StickCP2.BtnA.pressedFor(LONG_PRESS_DURATION_MS)) {
+                        StickCP2.Lcd.fillScreen(BLACK);
+                        StickCP2.Lcd.drawString("Powering Off...", StickCP2.Lcd.width()/2, StickCP2.Lcd.height()/2);
+                        delay(1500);
+                        StickCP2.Power.powerOff();
+                    }
+                    delay(10);
+                }
             }
             else if (strcmp(items[currentMenuSelection], "Exit") == 0) {
                 playSuccessBeeps(); setState(MODE_SELECTION);

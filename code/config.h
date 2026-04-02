@@ -30,7 +30,6 @@ const int AUTO_SLEEP_OPTIONS[] = {0, 1, 2, 5, 10};
 const int AUTO_SLEEP_OPTIONS_COUNT = 5;
 const unsigned long SLEEP_MESSAGE_DELAY_MS = 1500;
 const unsigned long WIFI_TIMEOUT_MS = 10UL * 60UL * 1000UL; // 10 minutes
-// #define C3_FREQUENCY 130.81f // No longer used for keep-alive
 const unsigned long BT_SCAN_DURATION_S = 10;
 const int MAX_BT_DEVICES_DISPLAY = 20;
 const unsigned long DISPLAY_UPDATE_INTERVAL_MS = 100;
