@@ -202,7 +202,7 @@ void setup() {
     }
 
     StickCP2.Lcd.fillScreen(BLACK);
-    displayBootScreen("Hey Man, Nice Shot", "Timer", "Initialization Complete!");
+    displayBootScreen("SendIt", "Shot Timer", "Initialization Complete!");
     playSuccessBeeps(); 
     delay(500); 
 

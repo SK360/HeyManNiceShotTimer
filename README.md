@@ -1,4 +1,4 @@
-# Hey Man, Nice Shot...Timer
+# SendIt Shot Timer
 ### A Feature-Rich Shooting Sport Timer for the M5StickC Plus2
 
 A versatile shot timer for live fire and dry fire practice, built on the M5StickC Plus2 (ESP32). Detects shots via microphone and/or IMU, records split times, supports Bluetooth audio output, and can be fully configured over WiFi from a phone or browser.
@@ -18,7 +18,7 @@ A versatile shot timer for live fire and dry fire practice, built on the M5Stick
 ## Flashing a Pre-Built Binary
 
 ### Browser (Any OS)
-1. Download the latest `.bin` from [Releases](https://github.com/jcarletto27/HeyManNiceShotTimer/releases)
+1. Download the latest `.bin` from [Releases](../../releases)
 2. Open the [Espressif Web Programmer](https://espressif.github.io/esptool-js/)
 3. Click **Connect** and select the device COM port
 4. Set Flash Address to `0x0`, select the `.bin` file
@@ -26,7 +26,7 @@ A versatile shot timer for live fire and dry fire practice, built on the M5Stick
 
 ### Windows (Command Line)
 ```powershell
-# In a new folder (e.g. C:\Users\%USERNAME%\Documents\HeyManNiceShot):
+# In a new folder (e.g. C:\Users\%USERNAME%\Documents\SendItTimer):
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install --upgrade pip esptool
@@ -35,7 +35,7 @@ pip install --upgrade pip esptool
 Get-PnpDevice -Class 'Ports' | Where-Object { $_.Present } | Select-Object Name, Present, Status
 
 # Flash (replace COM6 with your port)
-esptool -p COM6 write_flash 0x0 HMNS_T.bin
+esptool -p COM6 write_flash 0x0 merged.bin
 ```
 
 ---
@@ -106,7 +106,7 @@ SELECT MODE
     │   ├── Device Status
     │   └── WiFi Settings      (opens WiFi AP for browser config / OTA)
     ├── Power Off Now
-    └── Save & Exit
+    └── Exit
 ```
 
 ---
@@ -235,9 +235,9 @@ code/
 
 ## Hardware Gallery
 
-![Attached to Blue Gun](https://github.com/jcarletto27/HeyManNiceShotTimer/blob/main/images/PXL_20250506_164010292.MP.jpg?raw=true)
-![Mounted in Lanyard Mode](https://github.com/jcarletto27/HeyManNiceShotTimer/blob/main/images/PXL_20250506_164025303.MP.jpg?raw=true)
-![Closeup of Mounting Mechanism](https://github.com/jcarletto27/HeyManNiceShotTimer/blob/main/images/PXL_20250506_164028005.jpg?raw=true)
+![Attached to Blue Gun](images/PXL_20250506_164010292.MP.jpg)
+![Mounted in Lanyard Mode](images/PXL_20250506_164025303.MP.jpg)
+![Closeup of Mounting Mechanism](images/PXL_20250506_164028005.jpg)
 
 ---
 

@@ -68,7 +68,7 @@ void handleSettingsInput() {
     int rotation = StickCP2.Lcd.getRotation();
     int itemsPerScreen = MENU_ITEMS_PER_SCREEN_LANDSCAPE;
 
-    static const char* mainItems[] = {"Live Fire", "Dry Fire", "Noisy Range", "Beep Settings", "Bluetooth", "Device", "Power Off Now", "Save & Exit"};
+    static const char* mainItems[] = {"Live Fire", "Dry Fire", "Noisy Range", "Beep Settings", "Bluetooth", "Device", "Power Off Now", "Exit"};
     static const char* liveFireItems[] = {"Max Shots", "Shot Threshold", "Min 1st Shot", "Start Delay Min", "Start Delay Max", "Calibrate Thresh.", "Back"};
     static const char* beepItems[] = {"Beep Duration", "Beep Tone", "Post Beep Delay", "Tone Sweep", "Back"};
     static const char* noisyItems[] = {"Recoil Threshold", "Calibrate Recoil", "Back"};
@@ -195,8 +195,8 @@ void handleSettingsInput() {
                 delay(1500);
                 StickCP2.Power.powerOff();
             }
-            else if (strcmp(items[currentMenuSelection], "Save & Exit") == 0) {
-                saveSettings(); playSuccessBeeps(); setState(MODE_SELECTION);
+            else if (strcmp(items[currentMenuSelection], "Exit") == 0) {
+                playSuccessBeeps(); setState(MODE_SELECTION);
                 currentMenuSelection = (int)currentMode; menuScrollOffset = 0; needsActionRedraw = false;
                 StickCP2.Lcd.fillScreen(BLACK);
             }
@@ -486,6 +486,7 @@ void handleEditSettingInput() {
             case EDIT_START_DELAY_MAX: startDelayMaxMs = editingIntValue; break;
             default: break;
         }
+        saveSettings();
         setState(stateBeforeEdit);
         StickCP2.Lcd.fillScreen(BLACK);
         settingBeingEdited = EDIT_NONE;

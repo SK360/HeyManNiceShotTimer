@@ -85,7 +85,7 @@ void displayMenu(const char* title, const char* items[], int count, int selectio
                               strcmp(items[i], "Beep Settings") == 0 ||
                               strcmp(items[i], "Bluetooth Settings") == 0 ||
                               strcmp(items[i], "Tone Sweep") == 0 ||
-                              strcmp(items[i], "Save & Exit") == 0 ||
+                              strcmp(items[i], "Exit") == 0 ||
                               strcmp(items[i], "WiFi Settings") == 0 ||
                               strcmp(items[i], "Settings") == 0);
 

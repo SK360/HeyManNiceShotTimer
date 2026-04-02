@@ -12,6 +12,7 @@
 static WebServer* server = nullptr;
 static bool otaInProgress = false;
 static bool otaSuccess = false;
+static unsigned long wifiStartTime = 0;
 
 static const char* AP_SSID = "ShotTimer";
 static const char* AP_PASS = "shottimer";
@@ -22,7 +23,7 @@ static const char SETTINGS_HTML[] PROGMEM = R"rawliteral(
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Shot Timer Settings</title>
+<title>SendIt Shot Timer</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#111;color:#e0e0e0;padding:16px;max-width:480px;margin:0 auto}
@@ -67,7 +68,7 @@ input[type="number"]:focus,select:focus{outline:none;border-color:#4CAF50}
 </style>
 </head>
 <body>
-<h1>Shot Timer</h1>
+<h1>SendIt Shot Timer</h1>
 <p class="subtitle">Settings &amp; Firmware</p>
 
 <details open>
@@ -226,10 +227,12 @@ static void displayOtaUploading() {
 }
 
 static void handleRoot() {
+    wifiStartTime = millis();
     server->send(200, "text/html", SETTINGS_HTML);
 }
 
 static void handleGetSettings() {
+    wifiStartTime = millis();
     JsonDocument doc;
 
     JsonObject lf = doc["liveFire"].to<JsonObject>();
@@ -269,6 +272,7 @@ static void handleGetSettings() {
 }
 
 static void handlePostSettings() {
+    wifiStartTime = millis();
     if (!server->hasArg("plain")) {
         server->send(400, "application/json", "{\"status\":\"error\",\"message\":\"No body\"}");
         return;
@@ -440,6 +444,7 @@ void startOtaUpdate() {
 
     otaInProgress = false;
     otaSuccess = false;
+    wifiStartTime = millis();
 
     displayOtaScreen();
 }
@@ -450,7 +455,8 @@ void handleOtaUpdateLoop() {
     }
 
     // Allow cancel only when not mid-upload
-    if (!otaInProgress && StickCP2.BtnA.pressedFor(LONG_PRESS_DURATION_MS)) {
+    bool timedOut = !otaInProgress && (millis() - wifiStartTime > WIFI_TIMEOUT_MS);
+    if (!otaInProgress && (StickCP2.BtnA.pressedFor(LONG_PRESS_DURATION_MS) || timedOut)) {
         stopOtaUpdate();
         resetActivityTimer();
         settingsMenuLevel = 6;
