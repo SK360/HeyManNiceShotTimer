@@ -52,6 +52,7 @@ int minFirstShotTimeMs = 100;
 int postBeepDelayMs = 200;
 int startDelayMinMs = 2000;
 int startDelayMaxMs = 5000;
+int shotTimeoutMs = 15000;
 
 BluetoothA2DPSource a2dp_source;
 String currentBluetoothDeviceName = "";

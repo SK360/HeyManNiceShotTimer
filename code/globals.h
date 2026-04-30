@@ -38,6 +38,7 @@ extern int minFirstShotTimeMs;
 extern int postBeepDelayMs;
 extern int startDelayMinMs;
 extern int startDelayMaxMs;
+extern int shotTimeoutMs;
 
 // --- Bluetooth Variables ---
 extern BluetoothA2DPSource a2dp_source;

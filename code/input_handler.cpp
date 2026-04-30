@@ -69,7 +69,7 @@ void handleSettingsInput() {
     int itemsPerScreen = MENU_ITEMS_PER_SCREEN_LANDSCAPE;
 
     static const char* mainItems[] = {"Live Fire", "Dry Fire", "Noisy Range", "Beep Settings", "Bluetooth", "Device", "Power Off Now", "Exit"};
-    static const char* liveFireItems[] = {"Max Shots", "Shot Threshold", "Min 1st Shot", "Start Delay Min", "Start Delay Max", "Calibrate Thresh.", "Back"};
+    static const char* liveFireItems[] = {"Max Shots", "Shot Threshold", "Shot Timeout", "Min 1st Shot", "Start Delay Min", "Start Delay Max", "Calibrate Thresh.", "Back"};
     static const char* beepItems[] = {"Beep Duration", "Beep Tone", "Post Beep Delay", "UI Sounds", "Tone Sweep", "Back"};
     static const char* noisyItems[] = {"Recoil Threshold", "Calibrate Recoil", "Back"};
     static const char* deviceItems[] = {"Orientation", "Auto Sleep", "Device Status", "WiFi Settings", "Back"};
@@ -226,6 +226,8 @@ void handleSettingsInput() {
                 settingBeingEdited = EDIT_MAX_SHOTS; editingIntValue = currentMaxShots; setState(EDIT_SETTING); needsActionRedraw = false; StickCP2.Lcd.fillScreen(BLACK);
             } else if (strcmp(editingSettingName, "Shot Threshold") == 0) {
                 settingBeingEdited = EDIT_SHOT_THRESHOLD; editingIntValue = shotThresholdRms; setState(EDIT_SETTING); needsActionRedraw = false; StickCP2.Lcd.fillScreen(BLACK);
+            } else if (strcmp(editingSettingName, "Shot Timeout") == 0) {
+                settingBeingEdited = EDIT_SHOT_TIMEOUT; editingIntValue = shotTimeoutMs; setState(EDIT_SETTING); needsActionRedraw = false; StickCP2.Lcd.fillScreen(BLACK);
             } else if (strcmp(editingSettingName, "Min 1st Shot") == 0) {
                 settingBeingEdited = EDIT_MIN_FIRST_SHOT; editingIntValue = minFirstShotTimeMs; setState(EDIT_SETTING); needsActionRedraw = false; StickCP2.Lcd.fillScreen(BLACK);
             } else if (strcmp(editingSettingName, "Start Delay Min") == 0) {
@@ -449,6 +451,17 @@ void handleEditSettingInput() {
             case EDIT_START_DELAY_MAX:
                 editingIntValue = min(max(editingIntValue + (increment * 250), startDelayMinMs), MAX_START_DELAY_MS);
                 break;
+            case EDIT_SHOT_TIMEOUT: {
+                if (editingIntValue == 0) {
+                    editingIntValue = (increment > 0) ? 5000 : 60000;
+                } else {
+                    int newVal = editingIntValue + (increment * 1000);
+                    if (newVal > 60000) newVal = 0;
+                    else if (newVal < 5000) newVal = 0;
+                    editingIntValue = newVal;
+                }
+                break;
+            }
             default: valueChanged = false; break;
         }
         if (settingBeingEdited == EDIT_ROTATION) {
@@ -506,6 +519,7 @@ void handleEditSettingInput() {
                 break;
             case EDIT_START_DELAY_MIN: startDelayMinMs = editingIntValue; break;
             case EDIT_START_DELAY_MAX: startDelayMaxMs = editingIntValue; break;
+            case EDIT_SHOT_TIMEOUT: shotTimeoutMs = editingIntValue; break;
             default: break;
         }
         saveSettings();

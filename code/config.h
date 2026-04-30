@@ -9,7 +9,7 @@
 // --- Configuration Constants (These are generally safe in headers as const) ---
 const unsigned long LONG_PRESS_DURATION_MS = 750;
 const unsigned long SHOT_REFRACTORY_MS = 150;
-const unsigned long TIMEOUT_DURATION_MS = 15000;
+const unsigned long DEFAULT_TIMEOUT_DURATION_MS = 15000;
 const unsigned long BEEP_NOTE_DURATION_MS = 150;
 const unsigned long BEEP_NOTE_DELAY_MS = 50;
 const unsigned long BATTERY_CHECK_INTERVAL_MS = 60000;
@@ -65,6 +65,7 @@ extern const char* KEY_MIN_FIRST_SHOT;
 extern const char* KEY_POST_BEEP_DELAY;
 extern const char* KEY_START_DELAY_MIN;
 extern const char* KEY_START_DELAY_MAX;
+extern const char* KEY_SHOT_TIMEOUT;
 
 // --- Timer States ---
 enum TimerState {
@@ -121,7 +122,8 @@ enum EditableSetting {
     EDIT_TONE_SWEEP,
     EDIT_UI_SOUNDS,
     EDIT_START_DELAY_MIN,
-    EDIT_START_DELAY_MAX
+    EDIT_START_DELAY_MAX,
+    EDIT_SHOT_TIMEOUT
 };
 
 // --- Struct for Buzzer Task Queue ---

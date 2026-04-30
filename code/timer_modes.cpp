@@ -178,10 +178,10 @@ void handleLiveFireTiming() {
     }
 
     // Timeout Stop
-    if (currentState == LIVE_FIRE_TIMING) {
+    if (currentState == LIVE_FIRE_TIMING && shotTimeoutMs > 0) {
         unsigned long timeSinceEvent = (shotCount == 0) ? (currentTime - startTime) : (currentTime - lastShotTimestamp);
         bool hasStarted = (startTime > 0);
-        if (hasStarted && timeSinceEvent > TIMEOUT_DURATION_MS) {
+        if (hasStarted && timeSinceEvent > (unsigned long)shotTimeoutMs) {
             is_listening_active = false; 
             setState(LIVE_FIRE_STOPPED);
             StickCP2.Lcd.fillScreen(BLACK);
@@ -451,10 +451,10 @@ void handleNoisyRangeTiming() {
     }
 
     // Timeout Stop
-    if (currentState == NOISY_RANGE_TIMING) {
+    if (currentState == NOISY_RANGE_TIMING && shotTimeoutMs > 0) {
         unsigned long timeSinceEvent = (shotCount == 0) ? (currentTime - startTime) : (currentTime - lastShotTimestamp);
         bool hasStarted = (startTime > 0);
-        if (hasStarted && timeSinceEvent > TIMEOUT_DURATION_MS) {
+        if (hasStarted && timeSinceEvent > (unsigned long)shotTimeoutMs) {
             is_listening_active = false;
             setState(LIVE_FIRE_STOPPED); 
             StickCP2.Lcd.fillScreen(BLACK);

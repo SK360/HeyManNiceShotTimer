@@ -21,3 +21,4 @@ const char* KEY_MIN_FIRST_SHOT = "minFirstShot";
 const char* KEY_POST_BEEP_DELAY = "postBeepDly";
 const char* KEY_START_DELAY_MIN = "startDlyMin";
 const char* KEY_START_DELAY_MAX = "startDlyMax";
+const char* KEY_SHOT_TIMEOUT = "shotTimeout";

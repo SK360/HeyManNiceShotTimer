@@ -49,6 +49,11 @@ void loadSettings() {
     if (startDelayMaxMs > MAX_START_DELAY_MS) startDelayMaxMs = MAX_START_DELAY_MS;
     if (startDelayMaxMs < startDelayMinMs) startDelayMaxMs = startDelayMinMs;
 
+    shotTimeoutMs = preferences.getInt(KEY_SHOT_TIMEOUT, (int)DEFAULT_TIMEOUT_DURATION_MS);
+    if (shotTimeoutMs < 0) shotTimeoutMs = 0;
+    if (shotTimeoutMs > 60000) shotTimeoutMs = 60000;
+    if (shotTimeoutMs > 0 && shotTimeoutMs < 5000) shotTimeoutMs = 5000;
+
     currentBluetoothDeviceName = preferences.getString(KEY_BT_DEVICE_NAME, "");
     currentBluetoothAutoReconnect = preferences.getBool(KEY_BT_AUTO_RECONNECT, false);
     currentBluetoothVolume = preferences.getInt(KEY_BT_VOLUME, 80);
@@ -81,6 +86,7 @@ void saveSettings() {
     preferences.putInt(KEY_POST_BEEP_DELAY, postBeepDelayMs);
     preferences.putInt(KEY_START_DELAY_MIN, startDelayMinMs);
     preferences.putInt(KEY_START_DELAY_MAX, startDelayMaxMs);
+    preferences.putInt(KEY_SHOT_TIMEOUT, shotTimeoutMs);
 
     preferences.putString(KEY_BT_DEVICE_NAME, currentBluetoothDeviceName);
     preferences.putBool(KEY_BT_AUTO_RECONNECT, currentBluetoothAutoReconnect);
