@@ -117,7 +117,7 @@ void displayMenu(const char* title, const char* items[], int count, int selectio
             }
 
             else if (strcmp(items[i], "UI Sounds") == 0) itemText += (enableUISounds ? "On" : "Off");
-            else if (strcmp(items[i], "Shot Timeout") == 0) { if (shotTimeoutMs == 0) itemText += "Off"; else { itemText += shotTimeoutMs; itemText += "ms"; } }
+            else if (strcmp(items[i], "Shot Timeout") == 0) { if (shotTimeoutMs == 0) itemText += "Off"; else { itemText += (shotTimeoutMs / 1000); itemText += "s"; } }
             else if (strcmp(items[i], "Min 1st Shot") == 0) { itemText += minFirstShotTimeMs; itemText += "ms"; }
             else if (strcmp(items[i], "Post Beep Delay") == 0) { itemText += postBeepDelayMs; itemText += "ms"; }
             else if (strcmp(items[i], "Start Delay Min") == 0) { itemText += startDelayMinMs; itemText += "ms"; }
@@ -370,9 +370,9 @@ void displayEditScreen() {
                  StickCP2.Lcd.drawString("Off", StickCP2.Lcd.width() / 2, StickCP2.Lcd.height() / 2);
              } else {
                  StickCP2.Lcd.setTextFont(7); StickCP2.Lcd.setTextSize(1);
-                 StickCP2.Lcd.drawNumber(editingIntValue, StickCP2.Lcd.width() / 2, StickCP2.Lcd.height() / 2);
+                 StickCP2.Lcd.drawNumber(editingIntValue / 1000, StickCP2.Lcd.width() / 2, StickCP2.Lcd.height() / 2);
                  StickCP2.Lcd.setTextFont(0); StickCP2.Lcd.setTextSize(1);
-                 StickCP2.Lcd.drawString("ms", StickCP2.Lcd.width() / 2 + StickCP2.Lcd.textWidth(String(editingIntValue))/2 + 15, StickCP2.Lcd.height() / 2);
+                 StickCP2.Lcd.drawString("s", StickCP2.Lcd.width() / 2 + StickCP2.Lcd.textWidth(String(editingIntValue / 1000))/2 + 15, StickCP2.Lcd.height() / 2);
              }
              break;
         case EDIT_ROTATION:
